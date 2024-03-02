@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "544294646910",
+    "project_id": "ggc-2024",
+    "storage_bucket": "ggc-2024.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:544294646910:android:afac191fb5cdea125e142f",
+        "android_client_info": {
+          "package_name": "com.example.myapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDD2mRgStlcc7WxtUffEI6v8r9bo8lHrYw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
