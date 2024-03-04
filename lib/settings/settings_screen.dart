@@ -33,12 +33,25 @@ class SettingsScreen extends StatelessWidget {
               'Settings',
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontFamily: 'Permanent Marker',
+                fontFamily: 'Madimi One',
                 fontSize: 55,
                 height: 1,
               ),
             ),
             _gap,
+            ValueListenableBuilder<String>(
+              valueListenable: settings.playerUID,
+              builder: (context, uid, child) => _SettingsLine(
+                'UID',
+                Text(
+                  '$uid',
+                  style: const TextStyle(
+                    fontFamily: 'Madimi One',
+                    fontSize: 16,
+                  ),
+                ),
+              ),
+            ),
             const _NameChangeLine(
               'Name',
             ),
@@ -104,16 +117,17 @@ class _NameChangeLine extends StatelessWidget {
           children: [
             Text(title,
                 style: const TextStyle(
-                  fontFamily: 'Permanent Marker',
-                  fontSize: 30,
+                  fontFamily: 'Madimi One',
+                  fontSize: 24,
                 )),
             const Spacer(),
             ValueListenableBuilder(
               valueListenable: settings.playerName,
               builder: (context, name, child) => Text(
-                '‘$name’',
+                // '‘$name’',
+                '$name',
                 style: const TextStyle(
-                  fontFamily: 'Permanent Marker',
+                  fontFamily: 'Madimi One',
                   fontSize: 30,
                 ),
               ),
@@ -150,7 +164,7 @@ class _SettingsLine extends StatelessWidget {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
-                  fontFamily: 'Permanent Marker',
+                  fontFamily: 'Madimi One',
                   fontSize: 30,
                 ),
               ),

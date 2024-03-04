@@ -11,6 +11,8 @@ abstract class SettingsPersistence {
 
   Future<bool> getMusicOn({required bool defaultValue});
 
+  Future<String> getPlayerUID({required String defaultValue});
+
   Future<String> getPlayerName();
 
   Future<bool> getSoundsOn({required bool defaultValue});
@@ -18,6 +20,8 @@ abstract class SettingsPersistence {
   Future<void> saveAudioOn(bool value);
 
   Future<void> saveMusicOn(bool value);
+
+  Future<void> savePlayerUID(String value);
 
   Future<void> savePlayerName(String value);
 

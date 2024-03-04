@@ -8,6 +8,9 @@ import 'package:provider/provider.dart';
 
 import 'game_internals/score.dart';
 import 'main_menu/main_menu_screen.dart';
+import 'room_manager/create_room_screen.dart';
+import 'room_manager/join_room_screen.dart';
+import 'room_manager/room_screen.dart';
 import 'play_session/play_session_screen.dart';
 import 'settings/settings_screen.dart';
 import 'style/transition.dart';
@@ -23,9 +26,34 @@ final router = GoRouter(
       builder: (context, state) => const MainMenuScreen(key: Key('main menu')),
       routes: [
         GoRoute(
+            path: 'join',
+            pageBuilder: (context, state) => buildMyTransition<void>(
+                  key: const ValueKey('join'),
+                  color: context.watch<Palette>().backgroundPlaySession,
+                  child: const JoinRoomScreen(
+                    key: Key('join room'),
+                  ),
+                )),
+        GoRoute(
+          path: 'create',
+          pageBuilder: (context, state) => buildMyTransition<void>(
+            key: const ValueKey('create'),
+            color: context.watch<Palette>().backgroundPlaySession,
+            child: const CreateRoomScreen(
+              key: Key('create room'),
+            ),
+          ),
+        ),
+        GoRoute(
+            path: 'room/:roomId',
+            builder: (context, state) {
+              final roomId = state.pathParameters['roomId'];
+              return RoomScreen(key: Key('room'), roomId: roomId!);
+            }),
+        GoRoute(
           path: 'play',
           pageBuilder: (context, state) => buildMyTransition<void>(
-            key: ValueKey('play'),
+            key: const ValueKey('play'),
             color: context.watch<Palette>().backgroundPlaySession,
             child: const PlaySessionScreen(
               key: Key('level selection'),
@@ -49,7 +77,7 @@ final router = GoRouter(
                 final score = map['score'] as Score;
 
                 return buildMyTransition<void>(
-                  key: ValueKey('won'),
+                  key: const ValueKey('won'),
                   color: context.watch<Palette>().backgroundPlaySession,
                   child: WinGameScreen(
                     score: score,

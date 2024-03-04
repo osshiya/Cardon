@@ -14,7 +14,7 @@ import '../audio/audio_controller.dart';
 import '../audio/sfx.dart';
 import '../game_internals/board_state.dart';
 import '../game_internals/score.dart';
-import '../multiplayer/firestore_controller.dart';
+import '../multiplayer/old_firestore_controller.dart';
 import '../style/confetti.dart';
 import '../style/button.dart';
 import '../style/palette.dart';
@@ -71,15 +71,30 @@ class _PlaySessionScreenState extends State<PlaySessionScreen> {
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: InkResponse(
-                      onTap: () => GoRouter.of(context).push('/settings'),
-                      child: Image.asset(
-                        'assets/images/settings.png',
-                        semanticLabel: 'Settings',
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: InkResponse(
+                          onTap: () => GoRouter.of(context).push('/'),
+                          child: Image.asset(
+                            'assets/images/settings.png',
+                            semanticLabel: 'Exit game',
+                          ),
+                        ),
                       ),
-                    ),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: InkResponse(
+                          onTap: () => GoRouter.of(context).push('/settings'),
+                          child: Image.asset(
+                            'assets/images/settings.png',
+                            semanticLabel: 'Settings',
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                   const Spacer(),
                   // The actual UI of the game.

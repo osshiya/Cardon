@@ -13,6 +13,8 @@ class MemoryOnlySettingsPersistence implements SettingsPersistence {
 
   bool audioOn = true;
 
+  String playerUID = 'Player UID';
+
   String playerName = 'Player';
 
   @override
@@ -20,6 +22,10 @@ class MemoryOnlySettingsPersistence implements SettingsPersistence {
 
   @override
   Future<bool> getMusicOn({required bool defaultValue}) async => musicOn;
+
+  @override
+  Future<String> getPlayerUID({required String defaultValue}) async =>
+      playerUID;
 
   @override
   Future<String> getPlayerName() async => playerName;
@@ -32,6 +38,9 @@ class MemoryOnlySettingsPersistence implements SettingsPersistence {
 
   @override
   Future<void> saveMusicOn(bool value) async => musicOn = value;
+
+  @override
+  Future<void> savePlayerUID(String value) async => playerUID = value;
 
   @override
   Future<void> savePlayerName(String value) async => playerName = value;

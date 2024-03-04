@@ -32,7 +32,7 @@ class MainMenuScreen extends StatelessWidget {
               'Drag&Drop Cards!',
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontFamily: 'Permanent Marker',
+                fontFamily: 'Madimi One',
                 fontSize: 55,
                 height: 1,
               ),
@@ -45,9 +45,17 @@ class MainMenuScreen extends StatelessWidget {
             MyButton(
               onPressed: () {
                 audioController.playSfx(SfxType.buttonTap);
-                GoRouter.of(context).go('/play');
+                GoRouter.of(context).go('/join');
               },
-              child: const Text('Play'),
+              child: const Text('Join Room'),
+            ),
+            _gap,
+            MyButton(
+              onPressed: () {
+                audioController.playSfx(SfxType.buttonTap);
+                GoRouter.of(context).go('/create');
+              },
+              child: const Text('Create Room'),
             ),
             _gap,
             MyButton(

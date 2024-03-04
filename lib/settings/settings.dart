@@ -5,6 +5,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:logging/logging.dart';
 
+import 'package:uuid/uuid.dart';
+
 import 'persistence/local_storage_settings_persistence.dart';
 import 'persistence/settings_persistence.dart';
 
@@ -26,6 +28,9 @@ class SettingsController {
   /// [musicOn] preferences when they temporarily mute the game.
   ValueNotifier<bool> audioOn = ValueNotifier(true);
 
+  /// The player's uid. Used for things like identifier.
+  ValueNotifier<String> playerUID = ValueNotifier(Uuid().v4());
+
   /// The player's name. Used for things like high score lists.
   ValueNotifier<String> playerName = ValueNotifier('Player');
 
@@ -43,6 +48,11 @@ class SettingsController {
   SettingsController({SettingsPersistence? store})
       : _store = store ?? LocalStorageSettingsPersistence() {
     _loadStateFromPersistence();
+  }
+
+  void setPlayerUID(String uid) {
+    playerUID.value = uid;
+    _store.savePlayerUID(playerUID.value);
   }
 
   void setPlayerName(String name) {
@@ -83,6 +93,9 @@ class SettingsController {
       _store
           .getMusicOn(defaultValue: true)
           .then((value) => musicOn.value = value),
+      _store
+          .getPlayerUID(defaultValue: Uuid().v4())
+          .then((value) => playerUID.value = value),
       _store.getPlayerName().then((value) => playerName.value = value),
     ]);
 

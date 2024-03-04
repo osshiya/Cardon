@@ -37,8 +37,8 @@ void main() async {
   await SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
   // Lock the game to portrait mode on mobile devices.
   await SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-    DeviceOrientation.portraitDown,
+    DeviceOrientation.landscapeLeft,
+    DeviceOrientation.landscapeRight,
   ]);
 
   await Firebase.initializeApp(
@@ -48,7 +48,7 @@ void main() async {
   runApp(
     Provider.value(
       value: FirebaseFirestore.instance,
-      child: MyApp(),
+      child: const MyApp(),
     ),
   );
 }
@@ -90,18 +90,18 @@ class MyApp extends StatelessWidget {
             title: 'My Flutter Game',
             theme: ThemeData.from(
               colorScheme: ColorScheme.fromSeed(
-                seedColor: palette.darkPen,
+                seedColor: palette.darkButton,
                 background: palette.backgroundMain,
               ),
               textTheme: TextTheme(
-                bodyMedium: TextStyle(color: palette.ink),
+                bodyMedium: TextStyle(color: palette.font),
               ),
               useMaterial3: true,
             ).copyWith(
               // Make buttons more fun.
               filledButtonTheme: FilledButtonThemeData(
                 style: FilledButton.styleFrom(
-                  textStyle: TextStyle(
+                  textStyle: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 20,
                   ),
