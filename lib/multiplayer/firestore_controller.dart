@@ -8,6 +8,11 @@ import '../game_internals/board_state.dart';
 import '../game_internals/playing_area.dart';
 import '../game_internals/playing_card.dart';
 
+// Cards on the deck
+// Player's Card, Other's player card count
+// Timer (Start time)
+// Current player
+
 class FirestoreController {
   static final _log = Logger('FirestoreController');
 
@@ -19,49 +24,49 @@ class FirestoreController {
   /// for match-making, put it in a Firestore collection called matches.
   late final _matchRef = instance.collection('matches').doc('match_1');
 
-  late final _areaOneRef = _matchRef
+  late final _playingAreaRef = _matchRef
       .collection('areas')
-      .doc('area_one')
+      .doc('playing_area')
       .withConverter<List<PlayingCard>>(
           fromFirestore: _cardsFromFirestore, toFirestore: _cardsToFirestore);
 
-  late final _areaTwoRef = _matchRef
-      .collection('areas')
-      .doc('area_two')
-      .withConverter<List<PlayingCard>>(
-          fromFirestore: _cardsFromFirestore, toFirestore: _cardsToFirestore);
+  // late final _areaTwoRef = _matchRef
+  //     .collection('areas')
+  //     .doc('area_two')
+  //     .withConverter<List<PlayingCard>>(
+  //         fromFirestore: _cardsFromFirestore, toFirestore: _cardsToFirestore);
 
-  StreamSubscription? _areaOneFirestoreSubscription;
-  StreamSubscription? _areaTwoFirestoreSubscription;
+  StreamSubscription? _playingAreaFirestoreSubscription;
+  // StreamSubscription? _areaTwoFirestoreSubscription;
 
-  StreamSubscription? _areaOneLocalSubscription;
-  StreamSubscription? _areaTwoLocalSubscription;
+  StreamSubscription? _playingAreaLocalSubscription;
+  // StreamSubscription? _areaTwoLocalSubscription;
 
   FirestoreController({required this.instance, required this.boardState}) {
     // Subscribe to the remote changes (from Firestore).
-    _areaOneFirestoreSubscription = _areaOneRef.snapshots().listen((snapshot) {
-      _updateLocalFromFirestore(boardState.areaOne, snapshot);
+    _playingAreaFirestoreSubscription = _playingAreaRef.snapshots().listen((snapshot) {
+      _updateLocalFromFirestore(boardState.playingArea, snapshot);
     });
-    _areaTwoFirestoreSubscription = _areaTwoRef.snapshots().listen((snapshot) {
-      _updateLocalFromFirestore(boardState.areaTwo, snapshot);
-    });
+    // _areaTwoFirestoreSubscription = _areaTwoRef.snapshots().listen((snapshot) {
+    //   _updateLocalFromFirestore(boardState.areaTwo, snapshot);
+    // });
 
     // Subscribe to the local changes in game state.
-    _areaOneLocalSubscription = boardState.areaOne.playerChanges.listen((_) {
-      _updateFirestoreFromLocalAreaOne();
+    _playingAreaLocalSubscription = boardState.playingArea.playerChanges.listen((_) {
+      _updateFirestoreFromLocalPlayingArea();
     });
-    _areaTwoLocalSubscription = boardState.areaTwo.playerChanges.listen((_) {
-      _updateFirestoreFromLocalAreaTwo();
-    });
+    // _areaTwoLocalSubscription = boardState.areaTwo.playerChanges.listen((_) {
+    //   _updateFirestoreFromLocalAreaTwo();
+    // });
 
     _log.fine('Initialized');
   }
 
   void dispose() {
-    _areaOneFirestoreSubscription?.cancel();
-    _areaTwoFirestoreSubscription?.cancel();
-    _areaOneLocalSubscription?.cancel();
-    _areaTwoLocalSubscription?.cancel();
+    _playingAreaFirestoreSubscription?.cancel();
+    // _areaTwoFirestoreSubscription?.cancel();
+    _playingAreaLocalSubscription?.cancel();
+    // _areaTwoLocalSubscription?.cancel();
 
     _log.fine('Disposed');
   }
@@ -111,15 +116,15 @@ class FirestoreController {
     }
   }
 
-  /// Sends the local state of [boardState.areaOne] to Firestore.
-  void _updateFirestoreFromLocalAreaOne() {
-    _updateFirestoreFromLocal(boardState.areaOne, _areaOneRef);
+  /// Sends the local state of [boardState.playingArea] to Firestore.
+  void _updateFirestoreFromLocalPlayingArea() {
+    _updateFirestoreFromLocal(boardState.playingArea, _playingAreaRef);
   }
 
-  /// Sends the local state of [boardState.areaTwo] to Firestore.
-  void _updateFirestoreFromLocalAreaTwo() {
-    _updateFirestoreFromLocal(boardState.areaTwo, _areaTwoRef);
-  }
+  // /// Sends the local state of [boardState.areaTwo] to Firestore.
+  // void _updateFirestoreFromLocalAreaTwo() {
+  //   _updateFirestoreFromLocal(boardState.areaTwo, _areaTwoRef);
+  // }
 
   /// Updates the local state of [area] with the data from Firestore.
   void _updateLocalFromFirestore(

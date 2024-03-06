@@ -3,6 +3,8 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:flutter/material.dart';
+import 'package:myapp/game_internals/playing_timer.dart';
+import 'package:myapp/play_session/playing_timer_widget.dart';
 import 'package:provider/provider.dart';
 
 import '../game_internals/board_state.dart';
@@ -19,6 +21,22 @@ class BoardWidget extends StatefulWidget {
 }
 
 class _BoardWidgetState extends State<BoardWidget> {
+  late PlayingTimer playingTimer;
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialize the playing timer
+    playingTimer = PlayingTimer();
+  }
+
+  @override
+  void dispose() {
+    // Stop the timer when the widget is disposed
+    playingTimer.stopTimer();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final boardState = context.watch<BoardState>();
@@ -27,13 +45,14 @@ class _BoardWidgetState extends State<BoardWidget> {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
+        PlayingTimerWidget(playingTimer),
         Padding(
-          padding: const EdgeInsets.all(10),
+          padding: const EdgeInsets.all(5),
           child: Row(
             children: [
-              Expanded(child: PlayingAreaWidget(boardState.areaOne)),
-              SizedBox(width: 20),
-              Expanded(child: PlayingAreaWidget(boardState.areaTwo)),
+              Expanded(child: PlayingAreaWidget(boardState.playingArea)),
+              // SizedBox(width: 20),
+              // Expanded(child: PlayingAreaWidget(boardState.areaTwo)),
             ],
           ),
         ),

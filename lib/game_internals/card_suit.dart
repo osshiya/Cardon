@@ -1,8 +1,9 @@
 enum CardSuit {
-  clubs(1),
-  spades(2),
-  hearts(3),
-  diamonds(4);
+  energy(1),
+  transportation(2),
+  industry(3),
+  agriculture(4),
+  ultimate(5);
 
   final int internalRepresentation;
 
@@ -10,25 +11,31 @@ enum CardSuit {
 
   String get asCharacter {
     switch (this) {
-      case CardSuit.spades:
-        return '♠';
-      case CardSuit.hearts:
-        return '♥';
-      case CardSuit.diamonds:
-        return '♦';
-      case CardSuit.clubs:
-        return '♣';
+      case CardSuit.energy:
+        return '⚡';
+      case CardSuit.transportation:
+        return '🚌';
+      case CardSuit.industry:
+        return '🏭';
+      case CardSuit.agriculture:
+        return '🌱';
+      case CardSuit.ultimate:
+        return '💣';
     }
   }
 
   CardSuitColor get color {
     switch (this) {
-      case CardSuit.spades:
-      case CardSuit.clubs:
-        return CardSuitColor.black;
-      case CardSuit.hearts:
-      case CardSuit.diamonds:
+      case CardSuit.energy:
+        return CardSuitColor.green;
+      case CardSuit.transportation:
+        return CardSuitColor.blue;
+      case CardSuit.industry:
+        return CardSuitColor.yellow;
+      case CardSuit.agriculture:
         return CardSuitColor.red;
+      case CardSuit.ultimate:
+        return CardSuitColor.black;
     }
   }
 
@@ -36,7 +43,4 @@ enum CardSuit {
   String toString() => asCharacter;
 }
 
-enum CardSuitColor {
-  black,
-  red,
-}
+enum CardSuitColor { green, blue, yellow, red, black }

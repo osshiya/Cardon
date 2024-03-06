@@ -11,7 +11,7 @@ import 'package:provider/provider.dart';
 
 import '../audio/audio_controller.dart';
 import '../audio/sfx.dart';
-import '../multiplayer/old_firestore_controller.dart';
+// import '../multiplayer/old_firestore_controller.dart';
 import '../style/confetti.dart';
 import '../style/button.dart';
 import '../style/palette.dart';
@@ -73,6 +73,7 @@ class _RoomScreenState extends State<RoomScreen> {
           // in the middle, and a back button at the bottom.
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -100,7 +101,7 @@ class _RoomScreenState extends State<RoomScreen> {
                 ],
               ),
               Text(roomId),
-              const Spacer(),
+              // const Spacer(),
               // The actual UI of the game.
               Expanded(
                 child: StreamBuilder<Room>(
@@ -132,7 +133,7 @@ class _RoomScreenState extends State<RoomScreen> {
                   },
                 ),
               ),
-              const Spacer(),
+              // const Spacer(),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: MyButton(

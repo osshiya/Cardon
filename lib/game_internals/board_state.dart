@@ -10,9 +10,7 @@ import 'playing_area.dart';
 class BoardState {
   final VoidCallback onWin;
 
-  final PlayingArea areaOne = PlayingArea();
-
-  final PlayingArea areaTwo = PlayingArea();
+  final PlayingArea playingArea = PlayingArea();
 
   final Player player = Player();
 
@@ -20,12 +18,11 @@ class BoardState {
     player.addListener(_handlePlayerChange);
   }
 
-  List<PlayingArea> get areas => [areaOne, areaTwo];
+  List<PlayingArea> get areas => [playingArea];
 
   void dispose() {
     player.removeListener(_handlePlayerChange);
-    areaOne.dispose();
-    areaTwo.dispose();
+    playingArea.dispose();
   }
 
   void _handlePlayerChange() {

@@ -11,7 +11,7 @@ import 'package:provider/provider.dart';
 
 import '../audio/audio_controller.dart';
 import '../audio/sfx.dart';
-import '../multiplayer/old_firestore_controller.dart';
+// import '../multiplayer/old_firestore_controller.dart';
 import '../style/confetti.dart';
 import '../style/button.dart';
 import '../style/palette.dart';
@@ -61,6 +61,7 @@ class _JoinRoomScreenState extends State<JoinRoomScreen> {
           // in the middle, and a back button at the bottom.
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -151,7 +152,7 @@ class _JoinRoomScreenState extends State<JoinRoomScreen> {
                   },
                 ),
               ),
-              const Spacer(),
+              // const Spacer(),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: MyButton(

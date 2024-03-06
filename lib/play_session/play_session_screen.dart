@@ -14,7 +14,7 @@ import '../audio/audio_controller.dart';
 import '../audio/sfx.dart';
 import '../game_internals/board_state.dart';
 import '../game_internals/score.dart';
-import '../multiplayer/old_firestore_controller.dart';
+import '../multiplayer/firestore_controller.dart';
 import '../style/confetti.dart';
 import '../style/button.dart';
 import '../style/palette.dart';
