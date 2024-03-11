@@ -1,5 +1,9 @@
+import 'dart:js';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
+import 'package:myapp/settings/settings.dart';
+import 'package:provider/provider.dart';
 
 import 'playing_card.dart';
 
@@ -7,15 +11,16 @@ class Player extends ChangeNotifier {
   static const initialCards = 7;
   static const newCard = 1;
 
-  late String currentPlayer;
+  late List currentPlayers;
 
-  Player({required this.currentPlayer});
+  Player({required this.currentPlayers});
   
   factory Player.fromSnapshot(DocumentSnapshot<Map<String, dynamic>> snapshot) {
     // Access the currentPlayer field from the snapshot data
-    String currentPlayer = snapshot.get('currentPlayer');
+    List currentPlayers = snapshot.get('currentPlayers');
+    
     // Return a new Player object with the currentPlayer field set
-    return Player(currentPlayer: currentPlayer);
+    return Player(currentPlayers: currentPlayers);
   }
 
   final List<PlayingCard> hand =

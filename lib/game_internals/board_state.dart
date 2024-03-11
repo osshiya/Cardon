@@ -12,7 +12,7 @@ class BoardState {
 
   final PlayingArea playingArea = PlayingArea();
 
-  final Player player = Player(currentPlayer: '');
+  final Player player = Player(currentPlayers: []);
 
   final String roomId = '';
 

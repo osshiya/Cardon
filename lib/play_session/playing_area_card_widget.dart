@@ -11,7 +11,7 @@ import '../game_internals/player.dart';
 import '../game_internals/playing_card.dart';
 import '../style/palette.dart';
 
-class PlayingCardWidget extends StatelessWidget {
+class PlayingAreaCardWidget extends StatelessWidget {
   // A standard playing card is 57.1mm x 88.9mm.
   static const double width = 57.1;
 
@@ -25,7 +25,7 @@ class PlayingCardWidget extends StatelessWidget {
 
   final PlayingCard lastCard;
 
-  const PlayingCardWidget(
+  const PlayingAreaCardWidget(
       this.card, this.player, this.currentPlayer, this.lastCard,
       {super.key});
 
@@ -61,40 +61,31 @@ class PlayingCardWidget extends StatelessWidget {
 
     /// Cards that aren't in a player's hand are not draggable.
     if (player == null) return cardWidget;
-    if (currentPlayer && ((lastCard.suit == card.suit || lastCard.suit == CardSuit.all) || lastCard.value == card.value)) {
-      return Draggable(
-        feedback: Transform.rotate(
-          angle: 0.1,
-          child: cardWidget,
-        ),
-        data: PlayingCardDragData(card, player!),
-        childWhenDragging: Opacity(
-          opacity: 0.5,
-          child: cardWidget,
-        ),
-        onDragStarted: () {
-          print(lastCard);
-          final audioController = context.read<AudioController>();
-          audioController.playSfx(SfxType.huhsh);
-        },
-        onDragEnd: (details) {
-          final audioController = context.read<AudioController>();
-          audioController.playSfx(SfxType.wssh);
-        },
-        child: cardWidget,
-      );
-    } else {
-      // If the player is not the current player, return the card without draggable behavior
+    // if (currentPlayer && (lastCard.suit == card.suit || lastCard.suit == CardSuit.all)) {
+    //   return Draggable(
+    //     feedback: Transform.rotate(
+    //       angle: 0.1,
+    //       child: cardWidget,
+    //     ),
+    //     data: PlayingCardDragData(card, player!),
+    //     childWhenDragging: Opacity(
+    //       opacity: 0.5,
+    //       child: cardWidget,
+    //     ),
+    //     onDragStarted: () {
+    //       print(lastCard);
+    //       final audioController = context.read<AudioController>();
+    //       audioController.playSfx(SfxType.huhsh);
+    //     },
+    //     onDragEnd: (details) {
+    //       final audioController = context.read<AudioController>();
+    //       audioController.playSfx(SfxType.wssh);
+    //     },
+    //     child: cardWidget,
+    //   );
+    // } else {
+    //   // If the player is not the current player, return the card without draggable behavior
       return cardWidget;
-    }
+    // }
   }
-}
-
-@immutable
-class PlayingCardDragData {
-  final PlayingCard card;
-
-  final Player holder;
-
-  const PlayingCardDragData(this.card, this.holder);
 }

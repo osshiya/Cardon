@@ -2,6 +2,9 @@ import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:myapp/game_internals/card_suit.dart';
+import 'package:myapp/play_session/board_widget.dart';
+import 'package:myapp/play_session/playing_area_card_widget.dart';
 import 'package:myapp/player_progress/player_progress.dart';
 import 'package:provider/provider.dart';
 
@@ -15,13 +18,20 @@ import 'playing_card_widget.dart';
 import '../settings/settings.dart';
 import '../multiplayer/firestore_controller.dart';
 
+enum PlayerAction { next, prev }
+
 class PlayingAreaWidget extends StatefulWidget {
   final PlayingArea area;
   final Player player;
   final String roomId;
   final bool currentPlayer;
+  final List currentPlayers;
+  final PlayingCard lastCard;
+final Function(PlayingCard) updateLastCard;
 
-  const PlayingAreaWidget(this.area, this.player, this.roomId, this.currentPlayer, {super.key});
+  const PlayingAreaWidget(this.area, this.player, this.roomId,
+      this.currentPlayer, this.currentPlayers, this.lastCard, this.updateLastCard,
+      {super.key});
 
   @override
   State<PlayingAreaWidget> createState() => _PlayingAreaWidgetState();
@@ -29,7 +39,47 @@ class PlayingAreaWidget extends StatefulWidget {
 
 class _PlayingAreaWidgetState extends State<PlayingAreaWidget> {
   bool isHighlighted = false;
+  // PlayingCard lastCard = PlayingCard(CardSuit.all, 0);
 
+  void updateCurrentPlayer(PlayerAction action) async {
+    try {
+      switch (action) {
+        case PlayerAction.next:
+          String lastPlayer = widget.currentPlayers[
+              widget.currentPlayers.length - 1]; // Get the last player
+          widget.currentPlayers
+              .insert(0, lastPlayer); // Move the last player to the beginning
+          widget.currentPlayers
+              .removeLast(); // Remove the last occurrence of the player
+          break;
+        case PlayerAction.prev:
+          String firstPlayer = widget.currentPlayers[0]; // Get the first player
+          widget.currentPlayers
+              .add(firstPlayer); // Move the first player to the end
+          widget.currentPlayers
+              .removeAt(0); // Remove the first occurrence of the player
+          break;
+      }
+
+      try {
+        await FirebaseFirestore.instance
+            .collection('rooms')
+            .doc(widget.roomId)
+            .update({'currentPlayers': widget.currentPlayers});
+        print(widget.roomId);
+        print(widget.currentPlayers);
+        print('Current player updated successfully');
+      } catch (e) {
+        print(widget.roomId);
+        print(widget.currentPlayers);
+        print('Error updating current player: $e');
+      }
+
+      print('Current player updated successfully');
+    } catch (e) {
+      print('Error updating current player: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +101,13 @@ class _PlayingAreaWidgetState extends State<PlayingAreaWidget> {
                 // Rebuild the card stack whenever the area changes
                 // (either by a player action, or remotely).
                 stream: widget.area.allChanges,
-                builder: (context, child) => _CardStack(widget.area.cards, widget.player, widget.currentPlayer),
+                builder: (context, child) =>
+                   _CardStack(
+                    widget.area.cards,
+                    widget.player,
+                    widget.currentPlayer,
+                    widget.lastCard, // Pass the latest card to the _CardStack widget
+                  )
               ),
             ),
           ),
@@ -76,6 +132,9 @@ class _PlayingAreaWidgetState extends State<PlayingAreaWidget> {
     widget.area.acceptCard(details.data.card);
     details.data.holder.removeCard(details.data.card);
     setState(() => isHighlighted = false);
+
+    updateCurrentPlayer(PlayerAction.next);
+    widget.updateLastCard(details.data.card);
   }
 
   void _onDragLeave(PlayingCardDragData? data) {
@@ -103,8 +162,9 @@ class _CardStack extends StatelessWidget {
   final List<PlayingCard> cards;
   final Player player;
   final bool currentPlayer;
+  final PlayingCard lastCard; // Make lastCard nullable
 
-  const _CardStack(this.cards, this.player, this.currentPlayer);
+  const _CardStack(this.cards, this.player, this.currentPlayer, this.lastCard);
 
   @override
   Widget build(BuildContext context) {
@@ -120,7 +180,8 @@ class _CardStack extends StatelessWidget {
               Positioned(
                 top: i * _topOffset,
                 left: i * _leftOffset,
-                child: PlayingCardWidget(cards[i], player, currentPlayer),
+                child: PlayingAreaCardWidget(
+                    cards[i], player, currentPlayer, lastCard),
               ),
           ],
         ),

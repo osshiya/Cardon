@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:myapp/game_internals/playing_card.dart';
 import 'package:provider/provider.dart';
 
 import '../game_internals/board_state.dart';
@@ -6,8 +7,9 @@ import 'playing_card_widget.dart';
 
 class PlayerHandWidget extends StatelessWidget {
   final bool currentPlayer;
+  final PlayingCard lastCard;
 
-  const PlayerHandWidget(this.currentPlayer, {super.key});
+  const PlayerHandWidget(this.currentPlayer, this.lastCard, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +30,7 @@ class PlayerHandWidget extends StatelessWidget {
               runSpacing: 10,
               children: [
                 ...boardState.player.hand.map((card) =>
-                    PlayingCardWidget(card, boardState.player, currentPlayer)),
+                    PlayingCardWidget(card, boardState.player, currentPlayer, lastCard)),
               ],
             );
           },

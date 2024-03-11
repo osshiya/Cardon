@@ -24,8 +24,10 @@ class PlayingCard {
 
   factory PlayingCard.random([Random? random]) {
     random ??= _random;
+    var availableSuits =
+        CardSuit.values.where((suit) => suit != CardSuit.all).toList();
     return PlayingCard(
-      CardSuit.values[random.nextInt(CardSuit.values.length)],
+      availableSuits[random.nextInt(availableSuits.length)],
       0 + random.nextInt(10),
     );
   }
@@ -34,7 +36,7 @@ class PlayingCard {
   int get hashCode => Object.hash(suit, value);
 
   @override
-  bool operator == (Object other) {
+  bool operator ==(Object other) {
     return other is PlayingCard && other.suit == suit && other.value == value;
   }
 

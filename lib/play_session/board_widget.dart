@@ -4,7 +4,10 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:myapp/game_internals/card_suit.dart';
 import 'package:myapp/game_internals/player.dart';
+import 'package:myapp/game_internals/playing_card.dart';
 import 'package:myapp/game_internals/playing_timer.dart';
 import 'package:myapp/play_session/playing_timer_widget.dart';
 import 'package:myapp/player_progress/player_progress.dart';
@@ -26,10 +29,13 @@ class BoardWidget extends StatefulWidget {
 
 class _BoardWidgetState extends State<BoardWidget> {
   late Stream<Player> _playerStream;
-  late String roomId;
   late bool currentPlayer = false;
+  late String roomId = '';
   late String playerUID = '';
+  late String playerName = '';
+  late List currentPlayers = [];
   late PlayingTimer playingTimer;
+  late PlayingCard lastCard = PlayingCard(CardSuit.all, 0);
 
   @override
   void initState() {
@@ -39,6 +45,7 @@ class _BoardWidgetState extends State<BoardWidget> {
     roomId = playerProgress.lastRoomId;
     final settings = Provider.of<SettingsController>(context, listen: false);
     playerUID = settings.playerUID.value;
+    playerName = settings.playerName.value;
 
     _playerStream = FirebaseFirestore.instance
         .collection('rooms')
@@ -52,14 +59,34 @@ class _BoardWidgetState extends State<BoardWidget> {
       // print(playerUID);
       // print(player.currentPlayer == playerUID);
       setState(() {
-        currentPlayer = player.currentPlayer == playerUID;
+        currentPlayers = player.currentPlayers;
+        currentPlayer = player.currentPlayers[0] == playerUID;
       });
     });
 
     // Initialize the playing timer
     playingTimer = PlayingTimer();
+
+    FirebaseFirestore.instance
+        .collection('rooms')
+        .doc(roomId)
+        .snapshots()
+        .listen((snapshot) {
+      final gameEnded = snapshot.data()?['gameStarted'] == false;
+      final winner = snapshot.data()?['winner'];
+      if (gameEnded) {
+      GoRouter.of(context).go('/play/won', extra: {'winner': winner});
+      }
+    });
   }
 
+  // Define a function to update lastCard
+  void updateLastCard(PlayingCard newLastCard) {
+    setState(() {
+      lastCard = newLastCard;
+    });
+  }
+  
   @override
   void dispose() {
     // Stop the timer when the widget is disposed
@@ -82,12 +109,12 @@ class _BoardWidgetState extends State<BoardWidget> {
             children: [
               Expanded(
                 child: PlayingAreaWidget(boardState.playingArea,
-                    boardState.player, boardState.roomId, currentPlayer),
+                    boardState.player, roomId, currentPlayer, currentPlayers, lastCard, updateLastCard),
               )
             ],
           ),
         ),
-        PlayerHandWidget(currentPlayer),
+        PlayerHandWidget(currentPlayer, lastCard),
       ],
     );
   }

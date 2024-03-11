@@ -69,18 +69,18 @@ class _RoomScreenState extends State<RoomScreen> {
 
   void notifyGameStart() async {
     try {
+      List<String> currentPlayers = players.map((player) => player['uid'] as String).toList();
+      currentPlayers.shuffle();
       // Update a field in Firestore to indicate that the game has started
       await FirebaseFirestore.instance
           .collection('rooms')
           .doc(roomId)
-          .update({'gameStarted': true});
-
+          .update({'gameStarted': true, 'currentPlayers': currentPlayers});
     } catch (e) {
       // Handle any errors that occur during the update process
       print('Error notifying game start: $e');
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -200,16 +200,15 @@ class Room {
     final players = data['players'] as List<dynamic>;
 
     return Room(
-      roomId: snapshot.id,
-      roomName: data['roomName'] ?? '',
-      players: players
-          .map((player) => {
-                'uid': player['uid'].toString(),
-                'name': player['name'].toString(),
-              })
-          .toList(),
-      numberOfPlayers: players.length,
-      gameStarted: data['gameStarted'] ?? false
-    );
+        roomId: snapshot.id,
+        roomName: data['roomName'] ?? '',
+        players: players
+            .map((player) => {
+                  'uid': player['uid'].toString(),
+                  'name': player['name'].toString(),
+                })
+            .toList(),
+        numberOfPlayers: players.length,
+        gameStarted: data['gameStarted'] ?? false);
   }
 }

@@ -12,11 +12,11 @@ import '../style/palette.dart';
 import '../style/responsive_screen.dart';
 
 class WinGameScreen extends StatelessWidget {
-  final Score score;
+  final String winner;
 
   const WinGameScreen({
     super.key,
-    required this.score,
+    required this.winner,
   });
 
   @override
@@ -32,21 +32,21 @@ class WinGameScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             gap,
-            const Center(
+            Center(
               child: Text(
-                'You won!',
+                '$winner won!',
                 style: TextStyle(fontFamily: 'Permanent Marker', fontSize: 50),
               ),
             ),
             gap,
-            Center(
-              child: Text(
-                'Score: ${score.score}\n'
-                'Time: ${score.formattedTime}',
-                style: const TextStyle(
-                    fontFamily: 'Permanent Marker', fontSize: 20),
-              ),
-            ),
+            // Center(
+            //   child: Text(
+            //     // 'Score: ${score.score}\n'
+            //     // 'Time: ${score.formattedTime}',
+            //     style: const TextStyle(
+            //         fontFamily: 'Permanent Marker', fontSize: 20),
+            //   ),
+            // ),
           ],
         ),
         rectangularMenuArea: MyButton(

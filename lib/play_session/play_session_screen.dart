@@ -8,6 +8,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:logging/logging.dart' hide Level;
+import 'package:myapp/settings/settings.dart';
 import 'package:provider/provider.dart';
 
 import '../audio/audio_controller.dart';
@@ -35,6 +36,12 @@ class PlaySessionScreen extends StatefulWidget {
 
 class _PlaySessionScreenState extends State<PlaySessionScreen> {
   static final _log = Logger('PlaySessionScreen');
+
+  late String roomId = '';
+
+  late String playerUID = '';
+
+  late String playerName = '';
 
   static const _celebrationDuration = Duration(milliseconds: 2000);
 
@@ -149,10 +156,29 @@ class _PlaySessionScreenState extends State<PlaySessionScreen> {
           "Running without _firestoreController.");
     } else {
       _firestoreController = FirestoreController(
-        instance: firestore,
-        boardState: _boardState,
-        playerProgress: _playerProgress
-      );
+          instance: firestore,
+          boardState: _boardState,
+          playerProgress: _playerProgress);
+    }
+
+
+    final playerProgress = Provider.of<PlayerProgress>(context, listen: false);
+    roomId = playerProgress.lastRoomId;
+    final settings = Provider.of<SettingsController>(context, listen: false);
+    playerUID = settings.playerUID.value;
+    playerName = settings.playerName.value;
+  }
+
+  void notifyGameEnd() async {
+    try {
+      // Update a field in Firestore to indicate that the game has started
+      await FirebaseFirestore.instance
+          .collection('rooms')
+          .doc(roomId)
+          .update({'gameStarted': false, 'winner': playerName});
+    } catch (e) {
+      // Handle any errors that occur during the update process
+      print('Error notifying game end: $e');
     }
   }
 
@@ -160,10 +186,9 @@ class _PlaySessionScreenState extends State<PlaySessionScreen> {
     _log.info('Player won');
 
     // TODO: replace with some meaningful score for the card game
-    final score = Score(1, 1, DateTime.now().difference(_startOfPlay));
+    // final score = Score(1, 1, DateTime.now().difference(_startOfPlay));
 
-    // final playerProgress = context.read<PlayerProgress>();
-    // playerProgress.setLevelReached(widget.level.number);
+    notifyGameEnd();
 
     // Let the player see the game just after winning for a bit.
     await Future<void>.delayed(_preCelebrationDuration);
@@ -180,6 +205,6 @@ class _PlaySessionScreenState extends State<PlaySessionScreen> {
     await Future<void>.delayed(_celebrationDuration);
     if (!mounted) return;
 
-    GoRouter.of(context).go('/play/won', extra: {'score': score});
+    // GoRouter.of(context).go('/play/won', extra: {'score': score});
   }
 }
