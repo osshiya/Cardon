@@ -1,4 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:myapp/player_progress/player_progress.dart';
+import 'package:myapp/settings/settings.dart';
 import 'package:provider/provider.dart';
 
 import '../audio/audio_controller.dart';
@@ -18,13 +21,25 @@ class PlayingCardWidget extends StatelessWidget {
 
   final Player? player;
 
-  const PlayingCardWidget(this.card, {this.player, super.key});
+  final bool currentPlayer;
+
+  const PlayingCardWidget(this.card, this.player, this.currentPlayer,
+      {super.key});
 
   @override
   Widget build(BuildContext context) {
     final palette = context.watch<Palette>();
-    final textColor =
-        card.suit.color == CardSuitColor.red ? palette.redPen : palette.font;
+    final textColor = card.suit.color == CardSuitColor.red
+        ? palette.redPen
+        : card.suit.color == CardSuitColor.green
+            ? palette.greenPen
+            : card.suit.color == CardSuitColor.blue
+                ? palette.bluePen
+                : card.suit.color == CardSuitColor.yellow
+                    ? palette.yellowPen
+                    : card.suit.color == CardSuitColor.black
+                        ? palette.blackPen
+                        : palette.font;
 
     final cardWidget = DefaultTextStyle(
       style: Theme.of(context).textTheme.bodyMedium!.apply(color: textColor),
@@ -46,26 +61,31 @@ class PlayingCardWidget extends StatelessWidget {
     /// Cards that aren't in a player's hand are not draggable.
     if (player == null) return cardWidget;
 
-    return Draggable(
-      feedback: Transform.rotate(
-        angle: 0.1,
+    if (currentPlayer) {
+      return Draggable(
+        feedback: Transform.rotate(
+          angle: 0.1,
+          child: cardWidget,
+        ),
+        data: PlayingCardDragData(card, player!),
+        childWhenDragging: Opacity(
+          opacity: 0.5,
+          child: cardWidget,
+        ),
+        onDragStarted: () {
+          final audioController = context.read<AudioController>();
+          audioController.playSfx(SfxType.huhsh);
+        },
+        onDragEnd: (details) {
+          final audioController = context.read<AudioController>();
+          audioController.playSfx(SfxType.wssh);
+        },
         child: cardWidget,
-      ),
-      data: PlayingCardDragData(card, player!),
-      childWhenDragging: Opacity(
-        opacity: 0.5,
-        child: cardWidget,
-      ),
-      onDragStarted: () {
-        final audioController = context.read<AudioController>();
-        audioController.playSfx(SfxType.huhsh);
-      },
-      onDragEnd: (details) {
-        final audioController = context.read<AudioController>();
-        audioController.playSfx(SfxType.wssh);
-      },
-      child: cardWidget,
-    );
+      );
+    } else {
+      // If the player is not the current player, return the card without draggable behavior
+      return cardWidget;
+    }
   }
 }
 

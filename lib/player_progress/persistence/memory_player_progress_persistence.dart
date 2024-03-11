@@ -7,17 +7,17 @@ import 'player_progress_persistence.dart';
 /// An in-memory implementation of [PlayerProgressPersistence].
 /// Useful for testing.
 class MemoryOnlyPlayerProgressPersistence implements PlayerProgressPersistence {
-  int level = 0;
+  String room = '';
 
   @override
-  Future<int> getHighestLevelReached() async {
+  Future<String> getLastRoomID() async {
     await Future<void>.delayed(const Duration(milliseconds: 500));
-    return level;
+    return room;
   }
 
   @override
-  Future<void> saveHighestLevelReached(int level) async {
+  Future<void> saveLastRoomID(String room) async {
     await Future<void>.delayed(const Duration(milliseconds: 500));
-    this.level = level;
+    this.room = room;
   }
 }

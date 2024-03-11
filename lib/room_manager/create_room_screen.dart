@@ -106,14 +106,14 @@ class _CreateRoomScreenState extends State<CreateRoomScreen> {
                               final Map<String, dynamic> currentPlayer = {
                                 'uid': settings.playerUID.value,
                                 'name': settings.playerName.value,
-                                'cards': [], // Start with an empty cards array
                               };
                               FirebaseFirestore.instance
                                   .collection('rooms')
                                   .add({
                                 'roomName': newRoom.roomName,
                                 'players':
-                                    FieldValue.arrayUnion([currentPlayer])
+                                    FieldValue.arrayUnion([currentPlayer]),
+                                'gameStarted': false
                               }).then((value) {
                                 // Successfully created room
                                 print('Room created successfully: ${value.id}');

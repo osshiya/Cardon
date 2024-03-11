@@ -19,6 +19,7 @@ import '../style/confetti.dart';
 import '../style/button.dart';
 import '../style/palette.dart';
 import 'board_widget.dart';
+import '../player_progress/player_progress.dart';
 
 /// This widget defines the entirety of the screen that the player sees when
 /// they are playing a level.
@@ -44,6 +45,8 @@ class _PlaySessionScreenState extends State<PlaySessionScreen> {
   late DateTime _startOfPlay;
 
   late final BoardState _boardState;
+
+  late final PlayerProgress _playerProgress;
 
   FirestoreController? _firestoreController;
 
@@ -139,7 +142,7 @@ class _PlaySessionScreenState extends State<PlaySessionScreen> {
     super.initState();
     _startOfPlay = DateTime.now();
     _boardState = BoardState(onWin: _playerWon);
-
+    _playerProgress = context.read<PlayerProgress>();
     final firestore = context.read<FirebaseFirestore?>();
     if (firestore == null) {
       _log.warning("Firestore instance wasn't provided. "
@@ -148,6 +151,7 @@ class _PlaySessionScreenState extends State<PlaySessionScreen> {
       _firestoreController = FirestoreController(
         instance: firestore,
         boardState: _boardState,
+        playerProgress: _playerProgress
       );
     }
   }

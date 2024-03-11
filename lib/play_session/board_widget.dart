@@ -2,9 +2,13 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:myapp/game_internals/player.dart';
 import 'package:myapp/game_internals/playing_timer.dart';
 import 'package:myapp/play_session/playing_timer_widget.dart';
+import 'package:myapp/player_progress/player_progress.dart';
+import 'package:myapp/settings/settings.dart';
 import 'package:provider/provider.dart';
 
 import '../game_internals/board_state.dart';
@@ -21,11 +25,37 @@ class BoardWidget extends StatefulWidget {
 }
 
 class _BoardWidgetState extends State<BoardWidget> {
+  late Stream<Player> _playerStream;
+  late String roomId;
+  late bool currentPlayer = false;
+  late String playerUID = '';
   late PlayingTimer playingTimer;
 
   @override
   void initState() {
     super.initState();
+
+    final playerProgress = Provider.of<PlayerProgress>(context, listen: false);
+    roomId = playerProgress.lastRoomId;
+    final settings = Provider.of<SettingsController>(context, listen: false);
+    playerUID = settings.playerUID.value;
+
+    _playerStream = FirebaseFirestore.instance
+        .collection('rooms')
+        .doc(roomId)
+        .snapshots()
+        .map((snapshot) => Player.fromSnapshot(snapshot));
+
+    // Listen to changes in the stream and update currentPlayer accordingly
+    _playerStream.listen((player) {
+      // print(player.currentPlayer);
+      // print(playerUID);
+      // print(player.currentPlayer == playerUID);
+      setState(() {
+        currentPlayer = player.currentPlayer == playerUID;
+      });
+    });
+
     // Initialize the playing timer
     playingTimer = PlayingTimer();
   }
@@ -50,13 +80,14 @@ class _BoardWidgetState extends State<BoardWidget> {
           padding: const EdgeInsets.all(5),
           child: Row(
             children: [
-              Expanded(child: PlayingAreaWidget(boardState.playingArea)),
-              // SizedBox(width: 20),
-              // Expanded(child: PlayingAreaWidget(boardState.areaTwo)),
+              Expanded(
+                child: PlayingAreaWidget(boardState.playingArea,
+                    boardState.player, boardState.roomId, currentPlayer),
+              )
             ],
           ),
         ),
-        PlayerHandWidget(),
+        PlayerHandWidget(currentPlayer),
       ],
     );
   }

@@ -17,6 +17,8 @@ import '../style/button.dart';
 import '../style/palette.dart';
 
 import 'package:myapp/settings/settings.dart';
+import '../player_progress/player_progress.dart';
+import '../multiplayer/firestore_controller.dart';
 
 /// This widget defines the entirety of the screen that the player sees when
 /// they are playing a level.
@@ -42,6 +44,10 @@ class _RoomScreenState extends State<RoomScreen> {
     super.initState();
 
     roomId = widget.roomId;
+
+    final playerProgress = Provider.of<PlayerProgress>(context, listen: false);
+    playerProgress.setLastRoomID(roomId);
+
     _roomStream = FirebaseFirestore.instance
         .collection('rooms')
         .doc(roomId)
@@ -53,8 +59,28 @@ class _RoomScreenState extends State<RoomScreen> {
       setState(() {
         players = room.players;
       });
+
+      // Check if the game has started
+      if (room.gameStarted) {
+        GoRouter.of(context).go('/play');
+      }
     });
   }
+
+  void notifyGameStart() async {
+    try {
+      // Update a field in Firestore to indicate that the game has started
+      await FirebaseFirestore.instance
+          .collection('rooms')
+          .doc(roomId)
+          .update({'gameStarted': true});
+
+    } catch (e) {
+      // Handle any errors that occur during the update process
+      print('Error notifying game start: $e');
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -141,7 +167,7 @@ class _RoomScreenState extends State<RoomScreen> {
                           players[0]['uid'].toString() ==
                               settings.playerUID.value.toString()
                       ? () {
-                          GoRouter.of(context).go('/play');
+                          notifyGameStart();
                         }
                       : null,
                   child: const Text('Start'),
@@ -160,16 +186,19 @@ class Room {
   final String roomName;
   final List<Map<String, dynamic>> players;
   final int numberOfPlayers;
+  final bool gameStarted;
 
   Room(
       {required this.roomId,
       required this.roomName,
       required this.players,
-      required this.numberOfPlayers});
+      required this.numberOfPlayers,
+      required this.gameStarted});
 
   factory Room.fromSnapshot(DocumentSnapshot snapshot) {
     final data = snapshot.data() as Map<String, dynamic>;
     final players = data['players'] as List<dynamic>;
+
     return Room(
       roomId: snapshot.id,
       roomName: data['roomName'] ?? '',
@@ -180,6 +209,7 @@ class Room {
               })
           .toList(),
       numberOfPlayers: players.length,
+      gameStarted: data['gameStarted'] ?? false
     );
   }
 }

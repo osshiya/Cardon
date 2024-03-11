@@ -1,19 +1,27 @@
 import 'dart:math';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:myapp/player_progress/player_progress.dart';
 import 'package:provider/provider.dart';
 
 import '../audio/audio_controller.dart';
 import '../audio/sfx.dart';
 import '../game_internals/playing_area.dart';
 import '../game_internals/playing_card.dart';
+import '../game_internals/player.dart';
 import '../style/palette.dart';
 import 'playing_card_widget.dart';
+import '../settings/settings.dart';
+import '../multiplayer/firestore_controller.dart';
 
 class PlayingAreaWidget extends StatefulWidget {
   final PlayingArea area;
+  final Player player;
+  final String roomId;
+  final bool currentPlayer;
 
-  const PlayingAreaWidget(this.area, {super.key});
+  const PlayingAreaWidget(this.area, this.player, this.roomId, this.currentPlayer, {super.key});
 
   @override
   State<PlayingAreaWidget> createState() => _PlayingAreaWidgetState();
@@ -21,6 +29,7 @@ class PlayingAreaWidget extends StatefulWidget {
 
 class _PlayingAreaWidgetState extends State<PlayingAreaWidget> {
   bool isHighlighted = false;
+
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +51,7 @@ class _PlayingAreaWidgetState extends State<PlayingAreaWidget> {
                 // Rebuild the card stack whenever the area changes
                 // (either by a player action, or remotely).
                 stream: widget.area.allChanges,
-                builder: (context, child) => _CardStack(widget.area.cards),
+                builder: (context, child) => _CardStack(widget.area.cards, widget.player, widget.currentPlayer),
               ),
             ),
           ),
@@ -55,10 +64,12 @@ class _PlayingAreaWidgetState extends State<PlayingAreaWidget> {
   }
 
   void _onAreaTap() {
-    widget.area.removeFirstCard();
-
-    final audioController = context.read<AudioController>();
-    audioController.playSfx(SfxType.huhsh);
+    if (widget.currentPlayer) {
+      // widget.area.removeFirstCard();
+      widget.player.addCard();
+      final audioController = context.read<AudioController>();
+      audioController.playSfx(SfxType.huhsh);
+    }
   }
 
   void _onDragAccept(DragTargetDetails<PlayingCardDragData> details) {
@@ -90,8 +101,10 @@ class _CardStack extends StatelessWidget {
   static const _maxHeight = _maxCards * _topOffset + PlayingCardWidget.height;
 
   final List<PlayingCard> cards;
+  final Player player;
+  final bool currentPlayer;
 
-  const _CardStack(this.cards);
+  const _CardStack(this.cards, this.player, this.currentPlayer);
 
   @override
   Widget build(BuildContext context) {
@@ -107,7 +120,7 @@ class _CardStack extends StatelessWidget {
               Positioned(
                 top: i * _topOffset,
                 left: i * _leftOffset,
-                child: PlayingCardWidget(cards[i]),
+                child: PlayingCardWidget(cards[i], player, currentPlayer),
               ),
           ],
         ),

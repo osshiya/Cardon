@@ -7,7 +7,7 @@
 /// Implementations can range from simple in-memory storage through
 /// local preferences to cloud saves.
 abstract class PlayerProgressPersistence {
-  Future<int> getHighestLevelReached();
+  Future<String> getLastRoomID();
 
-  Future<void> saveHighestLevelReached(int level);
+  Future<void> saveLastRoomID(String room);
 }

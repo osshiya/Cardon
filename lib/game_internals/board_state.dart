@@ -12,7 +12,11 @@ class BoardState {
 
   final PlayingArea playingArea = PlayingArea();
 
-  final Player player = Player();
+  final Player player = Player(currentPlayer: '');
+
+  final String roomId = '';
+
+  final bool currentPlayer = false;
 
   BoardState({required this.onWin}) {
     player.addListener(_handlePlayerChange);

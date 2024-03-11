@@ -11,14 +11,12 @@ import 'persistence/player_progress_persistence.dart';
 
 /// Encapsulates the player's progress.
 class PlayerProgress extends ChangeNotifier {
-  static const maxHighestScoresPerPlayer = 10;
-
   /// By default, settings are persisted using
   /// [LocalStoragePlayerProgressPersistence] (i.e. NSUserDefaults on iOS,
   /// SharedPreferences on Android or local storage on the web).
   final PlayerProgressPersistence _store;
 
-  int _highestLevelReached = 0;
+  String _lastRoomId = '';
 
   /// Creates an instance of [PlayerProgress] backed by an injected
   /// persistence [store].
@@ -27,38 +25,36 @@ class PlayerProgress extends ChangeNotifier {
     _getLatestFromStore();
   }
 
-  /// The highest level that the player has reached so far.
-  int get highestLevelReached => _highestLevelReached;
+  /// The last room that the player has played so far.
+  String get lastRoomId => _lastRoomId;
 
   /// Resets the player's progress so it's like if they just started
   /// playing the game for the first time.
   void reset() {
-    _highestLevelReached = 0;
+    _lastRoomId = '';
     notifyListeners();
-    _store.saveHighestLevelReached(_highestLevelReached);
+    _store.saveLastRoomID(_lastRoomId);
   }
 
   /// Registers [level] as reached.
   ///
   /// If this is higher than [highestLevelReached], it will update that
   /// value and save it to the injected persistence store.
-  void setLevelReached(int level) {
-    if (level > _highestLevelReached) {
-      _highestLevelReached = level;
+  void setLastRoomID(String room) {
+    // if (_lastRoomId == '') {
+      _lastRoomId = room;
       notifyListeners();
 
-      unawaited(_store.saveHighestLevelReached(level));
-    }
+      unawaited(_store.saveLastRoomID(room));
+    // }
   }
 
   /// Fetches the latest data from the backing persistence store.
   Future<void> _getLatestFromStore() async {
-    final level = await _store.getHighestLevelReached();
-    if (level > _highestLevelReached) {
-      _highestLevelReached = level;
+    final room = await _store.getLastRoomID();
+    if (_lastRoomId == '') {
+      _lastRoomId = room;
       notifyListeners();
-    } else if (level < _highestLevelReached) {
-      await _store.saveHighestLevelReached(_highestLevelReached);
     }
   }
 }

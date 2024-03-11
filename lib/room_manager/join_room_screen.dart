@@ -161,7 +161,6 @@ class _JoinRoomScreenState extends State<JoinRoomScreen> {
                           final Map<String, dynamic> currentPlayer = {
                             'uid': settings.playerUID.value,
                             'name': settings.playerName.value,
-                            'cards': [], // Start with an empty cards array
                           };
                           FirebaseFirestore.instance
                               .collection('rooms')

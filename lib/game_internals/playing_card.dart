@@ -26,7 +26,7 @@ class PlayingCard {
     random ??= _random;
     return PlayingCard(
       CardSuit.values[random.nextInt(CardSuit.values.length)],
-      2 + random.nextInt(9),
+      0 + random.nextInt(10),
     );
   }
 
@@ -34,7 +34,7 @@ class PlayingCard {
   int get hashCode => Object.hash(suit, value);
 
   @override
-  bool operator ==(Object other) {
+  bool operator == (Object other) {
     return other is PlayingCard && other.suit == suit && other.value == value;
   }
 

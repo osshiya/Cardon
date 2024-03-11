@@ -7,6 +7,7 @@ import 'package:logging/logging.dart';
 import '../game_internals/board_state.dart';
 import '../game_internals/playing_area.dart';
 import '../game_internals/playing_card.dart';
+import '../player_progress/player_progress.dart';
 
 // Cards on the deck
 // Player's Card, Other's player card count
@@ -20,43 +21,43 @@ class FirestoreController {
 
   final BoardState boardState;
 
+  final PlayerProgress playerProgress;
+
   /// For now, there is only one match. But in order to be ready
   /// for match-making, put it in a Firestore collection called matches.
-  late final _matchRef = instance.collection('matches').doc('match_1');
+  late final _matchRef =
+      instance.collection('rooms').doc(playerProgress.lastRoomId);
 
   late final _playingAreaRef = _matchRef
-      .collection('areas')
-      .doc('playing_area')
       .withConverter<List<PlayingCard>>(
           fromFirestore: _cardsFromFirestore, toFirestore: _cardsToFirestore);
 
-  // late final _areaTwoRef = _matchRef
-  //     .collection('areas')
-  //     .doc('area_two')
-  //     .withConverter<List<PlayingCard>>(
-  //         fromFirestore: _cardsFromFirestore, toFirestore: _cardsToFirestore);
-
   StreamSubscription? _playingAreaFirestoreSubscription;
-  // StreamSubscription? _areaTwoFirestoreSubscription;
 
   StreamSubscription? _playingAreaLocalSubscription;
-  // StreamSubscription? _areaTwoLocalSubscription;
 
-  FirestoreController({required this.instance, required this.boardState}) {
+  FirestoreController(
+      {required this.instance,
+      required this.boardState,
+      required this.playerProgress}) {
     // Subscribe to the remote changes (from Firestore).
-    _playingAreaFirestoreSubscription = _playingAreaRef.snapshots().listen((snapshot) {
+    _playingAreaFirestoreSubscription =
+        _playingAreaRef.snapshots().listen((snapshot) {
       _updateLocalFromFirestore(boardState.playingArea, snapshot);
     });
-    // _areaTwoFirestoreSubscription = _areaTwoRef.snapshots().listen((snapshot) {
-    //   _updateLocalFromFirestore(boardState.areaTwo, snapshot);
+    // _playerAreaFirestoreSubscription =
+    //     _playerAreaRef.snapshots().listen((snapshot) {
+    //   _updateLocalFromFirestore(boardState.playingArea, snapshot);
     // });
 
     // Subscribe to the local changes in game state.
-    _playingAreaLocalSubscription = boardState.playingArea.playerChanges.listen((_) {
+    _playingAreaLocalSubscription =
+        boardState.playingArea.playerChanges.listen((_) {
       _updateFirestoreFromLocalPlayingArea();
     });
-    // _areaTwoLocalSubscription = boardState.areaTwo.playerChanges.listen((_) {
-    //   _updateFirestoreFromLocalAreaTwo();
+    // _playerAreaLocalSubscription =
+    //     boardState.playerArea.playerChanges.listen((_) {
+    //   _updateFirestoreFromLocalPlayerArea();
     // });
 
     _log.fine('Initialized');
@@ -108,7 +109,7 @@ class FirestoreController {
       PlayingArea area, DocumentReference<List<PlayingCard>> ref) async {
     try {
       _log.fine('Updating Firestore with local data (${area.cards}) ...');
-      await ref.set(area.cards);
+      await ref.set(area.cards, SetOptions(merge: true));
       _log.fine('... done updating.');
     } catch (e) {
       throw FirebaseControllerException(
