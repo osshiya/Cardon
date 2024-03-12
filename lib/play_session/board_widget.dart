@@ -34,6 +34,7 @@ class _BoardWidgetState extends State<BoardWidget> {
   late String playerName = '';
   late List currentPlayers = [];
   late PlayingTimer playingTimer;
+  late String prevPlayer = '';
 
   @override
   void initState() {
@@ -46,6 +47,7 @@ class _BoardWidgetState extends State<BoardWidget> {
     playerName = settings.playerName.value;
 
     playingTimer = PlayingTimer();
+    playingTimer.startTimer();
 
     _playerStream = FirebaseFirestore.instance
         .collection('rooms')
@@ -60,6 +62,11 @@ class _BoardWidgetState extends State<BoardWidget> {
         currentPlayers = player.currentPlayers;
         currentPlayer = player.currentPlayers[0]['uid'] == playerUID;
       });
+      if (prevPlayer != player.currentPlayers[0]['uid'] || prevPlayer == "") {
+        playingTimer.stopTimer();
+        playingTimer.startTimer();
+        prevPlayer = player.currentPlayers[0]['uid'];
+      }
     });
 
     FirebaseFirestore.instance
@@ -99,7 +106,7 @@ class _BoardWidgetState extends State<BoardWidget> {
             children: [
               Expanded(
                 child: PlayingAreaWidget(boardState.playingArea,
-                    boardState.player, roomId, currentPlayer, currentPlayers, playingTimer),
+                    boardState.player, roomId, currentPlayer, currentPlayers),
               )
             ],
           ),

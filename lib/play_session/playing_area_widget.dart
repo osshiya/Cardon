@@ -1,9 +1,7 @@
-import 'dart:async';
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:myapp/game_internals/playing_timer.dart';
 import 'package:provider/provider.dart';
 
 import 'package:myapp/audio/audio_controller.dart';
@@ -23,10 +21,9 @@ class PlayingAreaWidget extends StatefulWidget {
   final String roomId;
   final bool currentPlayer;
   final List currentPlayers;
-  final PlayingTimer playingTimer;
 
   const PlayingAreaWidget(this.area, this.player, this.roomId,
-      this.currentPlayer, this.currentPlayers, this.playingTimer,
+      this.currentPlayer, this.currentPlayers,
       {super.key});
 
   @override
@@ -39,7 +36,6 @@ class _PlayingAreaWidgetState extends State<PlayingAreaWidget> {
   @override
   void initState() {
     super.initState();
-    widget.playingTimer.startTimer();
   }
 
   void _getCardAutomatically() {
@@ -88,9 +84,6 @@ class _PlayingAreaWidgetState extends State<PlayingAreaWidget> {
   }
 
   void updateCurrentPlayer(PlayerAction action) async {
-    widget.playingTimer.stopTimer();
-    widget.playingTimer.startTimer();
-
     try {
       switch (action) {
         case PlayerAction.next:
