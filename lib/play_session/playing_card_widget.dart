@@ -112,8 +112,8 @@ class PlayingCardWidget extends StatelessWidget {
                 showDialog(
                   context: context,
                   builder: (context) => AlertDialog(
-                    title: Text('Tapped Card'),
-                    content: Text(card.getDesc(card.suit, card.value)),
+                    title: Text('${card.suit} ${card.value} Carbon Emissions'),
+                    content: Text("${card.getDesc(card.suit, card.value)} \n\n${card.getActionDesc(card.suit, card.value)}"),
                   ),
                 );
               },

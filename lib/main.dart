@@ -88,6 +88,7 @@ class MyApp extends StatelessWidget {
 
           return MaterialApp.router(
             title: 'Cardon!',
+            debugShowCheckedModeBanner: false,
             theme: ThemeData.from(
               colorScheme: ColorScheme.fromSeed(
                 seedColor: palette.darkButton,

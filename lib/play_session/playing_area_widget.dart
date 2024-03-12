@@ -162,13 +162,13 @@ class _PlayingAreaWidgetState extends State<PlayingAreaWidget> {
         .getAction(details.data.card.suit, details.data.card.value);
     switch (act[0]) {
       case "skip":
-        for (var i = 0; i < details.data.card.value; i++) {
+        for (var i = 0; i < act[1]; i++) {
           updateCurrentPlayer(PlayerAction.next);
         }
         updateCurrentPlayer(PlayerAction.next);
         break;
       case "add":
-        for (var i = 0; i < details.data.card.value; i++) {
+        for (var i = 0; i < act[1]; i++) {
           _getCardAutomatically();
           _updateCardCount(PlayerAction.next);
         }
