@@ -34,11 +34,11 @@ class PlayingCardWidget extends StatelessWidget {
       stream: area.allChanges.map((_) {
         return area.cards.isNotEmpty
             ? area.cards.last
-            : PlayingCard(CardSuit.all, 0);
+            : const PlayingCard(CardSuit.all, 0);
       }),
       initialData: area.cards.isNotEmpty
           ? area.cards.last
-          : PlayingCard(CardSuit.all, 0),
+          : const PlayingCard(CardSuit.all, 0),
       builder: (context, snapshot) {
         final lastCard = snapshot.data!;
 
@@ -76,28 +76,50 @@ class PlayingCardWidget extends StatelessWidget {
             (lastCard.suit == CardSuit.all ||
                 lastCard.suit == card.suit ||
                 lastCard.value == card.value)) {
-          return Draggable(
-            feedback: Transform.rotate(
-              angle: 0.1,
-              child: cardWidget,
-            ),
-            data: PlayingCardDragData(card, player!),
-            childWhenDragging: Opacity(
-              opacity: 0.5,
-              child: cardWidget,
-            ),
-            onDragStarted: () {
-              final audioController = context.read<AudioController>();
-              audioController.playSfx(SfxType.huhsh);
-            },
-            onDragEnd: (details) {
-              final audioController = context.read<AudioController>();
-              audioController.playSfx(SfxType.wssh);
-            },
-            child: cardWidget,
-          );
+          return GestureDetector(
+              onTap: () {
+                showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    title: Text('Tapped Card'),
+                    content: Text(
+                        'You tapped the card: ${card.suit.asCharacter} ${card.value}.'),
+                  ),
+                );
+              },
+              child: Draggable(
+                feedback: Transform.rotate(
+                  angle: 0.1,
+                  child: cardWidget,
+                ),
+                data: PlayingCardDragData(card, player!),
+                childWhenDragging: Opacity(
+                  opacity: 0.5,
+                  child: cardWidget,
+                ),
+                onDragStarted: () {
+                  final audioController = context.read<AudioController>();
+                  audioController.playSfx(SfxType.huhsh);
+                },
+                onDragEnd: (details) {
+                  final audioController = context.read<AudioController>();
+                  audioController.playSfx(SfxType.wssh);
+                },
+                child: cardWidget,
+              ));
         } else {
-          return cardWidget;
+          return GestureDetector(
+              onTap: () {
+                showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    title: Text('Tapped Card'),
+                    content: Text(
+                        'You tapped the card: ${card.suit.asCharacter} ${card.value}.'),
+                  ),
+                );
+              },
+              child: cardWidget);
         }
       },
     );

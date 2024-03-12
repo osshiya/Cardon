@@ -183,9 +183,6 @@ class _PlaySessionScreenState extends State<PlaySessionScreen> {
   Future<void> _playerWon() async {
     _log.info('Player won');
 
-    // TODO: replace with some meaningful score for the card game
-    // final score = Score(1, 1, DateTime.now().difference(_startOfPlay));
-
     notifyGameEnd();
 
     // Let the player see the game just after winning for a bit.
