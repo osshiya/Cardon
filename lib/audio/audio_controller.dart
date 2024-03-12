@@ -11,10 +11,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:logging/logging.dart';
 
-import '../app_lifecycle/app_lifecycle.dart';
-import '../settings/settings.dart';
-import 'music.dart';
-import 'sfx.dart';
+import 'package:myapp/app_lifecycle/app_lifecycle.dart';
+import 'package:myapp/settings/settings.dart';
+import 'package:myapp/audio/music.dart';
+import 'package:myapp/audio/sfx.dart';
 
 /// Allows playing music and sound. A facade to `package:audioplayers`.
 class AudioController {

@@ -4,11 +4,10 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:logging/logging.dart';
-
 import 'package:uuid/uuid.dart';
 
-import 'persistence/local_storage_settings_persistence.dart';
-import 'persistence/settings_persistence.dart';
+import 'package:myapp/settings/persistence/local_storage_settings_persistence.dart';
+import 'package:myapp/settings/persistence/settings_persistence.dart';
 
 /// An class that holds settings like [playerName] or [musicOn],
 /// and saves them to an injected persistence store.

@@ -11,16 +11,15 @@ import 'package:logging/logging.dart' hide Level;
 import 'package:myapp/settings/settings.dart';
 import 'package:provider/provider.dart';
 
-import '../audio/audio_controller.dart';
-import '../audio/sfx.dart';
-import '../game_internals/board_state.dart';
-import '../game_internals/score.dart';
-import '../multiplayer/firestore_controller.dart';
-import '../style/confetti.dart';
-import '../style/button.dart';
-import '../style/palette.dart';
-import 'board_widget.dart';
-import '../player_progress/player_progress.dart';
+import 'package:myapp/audio/audio_controller.dart';
+import 'package:myapp/audio/sfx.dart';
+import 'package:myapp/multiplayer/firestore_controller.dart';
+import 'package:myapp/style/confetti.dart';
+import 'package:myapp/style/button.dart';
+import 'package:myapp/style/palette.dart';
+import 'package:myapp/game_internals/board_state.dart';
+import 'package:myapp/play_session/board_widget.dart';
+import 'package:myapp/player_progress/player_progress.dart';
 
 /// This widget defines the entirety of the screen that the player sees when
 /// they are playing a level.
@@ -160,7 +159,6 @@ class _PlaySessionScreenState extends State<PlaySessionScreen> {
           boardState: _boardState,
           playerProgress: _playerProgress);
     }
-
 
     final playerProgress = Provider.of<PlayerProgress>(context, listen: false);
     roomId = playerProgress.lastRoomId;

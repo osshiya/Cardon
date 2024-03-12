@@ -1,8 +1,7 @@
 import 'dart:math';
-
 import 'package:flutter/foundation.dart';
 
-import 'card_suit.dart';
+import 'package:myapp/game_internals/card_suit.dart';
 
 @immutable
 class PlayingCard {

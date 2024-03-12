@@ -4,10 +4,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:logging/logging.dart';
 
-import '../game_internals/board_state.dart';
-import '../game_internals/playing_area.dart';
-import '../game_internals/playing_card.dart';
-import '../player_progress/player_progress.dart';
+import 'package:myapp/game_internals/board_state.dart';
+import 'package:myapp/game_internals/playing_area.dart';
+import 'package:myapp/game_internals/playing_card.dart';
+import 'package:myapp/player_progress/player_progress.dart';
 
 // Cards on the deck
 // Player's Card, Other's player card count
@@ -28,9 +28,8 @@ class FirestoreController {
   late final _matchRef =
       instance.collection('rooms').doc(playerProgress.lastRoomId);
 
-  late final _playingAreaRef = _matchRef
-      .withConverter<List<PlayingCard>>(
-          fromFirestore: _cardsFromFirestore, toFirestore: _cardsToFirestore);
+  late final _playingAreaRef = _matchRef.withConverter<List<PlayingCard>>(
+      fromFirestore: _cardsFromFirestore, toFirestore: _cardsToFirestore);
 
   StreamSubscription? _playingAreaFirestoreSubscription;
 

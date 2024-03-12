@@ -2,17 +2,14 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'dart:js';
-
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:myapp/player_progress/player_progress.dart';
 import 'package:provider/provider.dart';
 
-import '../game_internals/score.dart';
-import '../style/button.dart';
-import '../style/palette.dart';
-import '../style/responsive_screen.dart';
+import 'package:myapp/player_progress/player_progress.dart';
+import 'package:myapp/style/button.dart';
+import 'package:myapp/style/palette.dart';
+import 'package:myapp/style/responsive_screen.dart';
 
 class WinGameScreen extends StatefulWidget {
   final String winner;

@@ -2,21 +2,16 @@ import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:myapp/game_internals/card_suit.dart';
-import 'package:myapp/play_session/board_widget.dart';
-import 'package:myapp/play_session/playing_area_card_widget.dart';
-import 'package:myapp/player_progress/player_progress.dart';
 import 'package:provider/provider.dart';
 
-import '../audio/audio_controller.dart';
-import '../audio/sfx.dart';
-import '../game_internals/playing_area.dart';
-import '../game_internals/playing_card.dart';
-import '../game_internals/player.dart';
-import '../style/palette.dart';
-import 'playing_card_widget.dart';
-import '../settings/settings.dart';
-import '../multiplayer/firestore_controller.dart';
+import 'package:myapp/audio/audio_controller.dart';
+import 'package:myapp/audio/sfx.dart';
+import 'package:myapp/style/palette.dart';
+import 'package:myapp/play_session/playing_area_card_widget.dart';
+import 'package:myapp/game_internals/playing_area.dart';
+import 'package:myapp/game_internals/playing_card.dart';
+import 'package:myapp/game_internals/player.dart';
+import 'package:myapp/play_session/playing_card_widget.dart';
 
 enum PlayerAction { next, prev }
 
@@ -94,17 +89,12 @@ class _PlayingAreaWidgetState extends State<PlayingAreaWidget> {
             child: InkWell(
               splashColor: palette.redPen,
               onTap: _onAreaTap,
-child: StreamBuilder(
-                // Rebuild the card stack whenever the area changes
-                // (either by a player action, or remotely).
-                stream: widget.area.allChanges,
-                builder: (context, child) =>
-                   _CardStack(
-                    widget.area.cards,
-                    widget.player,
-                    widget.currentPlayer
-                  )
-              ),
+              child: StreamBuilder(
+                  // Rebuild the card stack whenever the area changes
+                  // (either by a player action, or remotely).
+                  stream: widget.area.allChanges,
+                  builder: (context, child) => _CardStack(
+                      widget.area.cards, widget.player, widget.currentPlayer)),
             ),
           ),
           // onWillAcceptWithDetails: _onDragWillAccept,
@@ -174,8 +164,7 @@ class _CardStack extends StatelessWidget {
               Positioned(
                 top: i * _topOffset,
                 left: i * _leftOffset,
-                child: PlayingAreaCardWidget(
-                    cards[i], player, currentPlayer),
+                child: PlayingAreaCardWidget(cards[i], player, currentPlayer),
               ),
           ],
         ),

@@ -13,12 +13,12 @@ import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 
 import 'firebase_options.dart';
-import 'app_lifecycle/app_lifecycle.dart';
-import 'audio/audio_controller.dart';
-import 'player_progress/player_progress.dart';
-import 'router.dart';
-import 'settings/settings.dart';
-import 'style/palette.dart';
+import 'package:myapp/app_lifecycle/app_lifecycle.dart';
+import 'package:myapp/audio/audio_controller.dart';
+import 'package:myapp/player_progress/player_progress.dart';
+import 'package:myapp/router.dart';
+import 'package:myapp/settings/settings.dart';
+import 'package:myapp/style/palette.dart';
 
 void main() async {
   // Basic logging setup.

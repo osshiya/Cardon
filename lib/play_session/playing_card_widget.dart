@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
 import 'package:myapp/audio/audio_controller.dart';
 import 'package:myapp/audio/sfx.dart';
 import 'package:myapp/game_internals/card_suit.dart';
@@ -6,7 +8,6 @@ import 'package:myapp/game_internals/player.dart';
 import 'package:myapp/game_internals/playing_card.dart';
 import 'package:myapp/game_internals/playing_area.dart';
 import 'package:myapp/style/palette.dart';
-import 'package:provider/provider.dart';
 
 class PlayingCardWidget extends StatelessWidget {
   static const double width = 57.1;
@@ -63,8 +64,8 @@ class PlayingCardWidget extends StatelessWidget {
               borderRadius: BorderRadius.circular(5),
             ),
             child: Center(
-              child:
-                  Text('${card.suit.asCharacter}\n${card.value}', textAlign: TextAlign.center),
+              child: Text('${card.suit.asCharacter}\n${card.value}',
+                  textAlign: TextAlign.center),
             ),
           ),
         );

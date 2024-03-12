@@ -1,13 +1,6 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
-import '../audio/audio_controller.dart';
-import '../audio/sfx.dart';
-import '../game_internals/playing_timer.dart';
-import '../style/palette.dart';
-import 'playing_timer_widget.dart';
+import 'package:myapp/game_internals/playing_timer.dart';
 
 class PlayingTimerWidget extends StatefulWidget {
   final PlayingTimer timer;

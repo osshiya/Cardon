@@ -9,13 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-import '../audio/audio_controller.dart';
-import '../audio/sfx.dart';
-// import '../multiplayer/old_firestore_controller.dart';
-import '../style/confetti.dart';
-import '../style/button.dart';
-import '../style/palette.dart';
-
+import 'package:myapp/style/button.dart';
+import 'package:myapp/style/palette.dart';
 import 'package:myapp/settings/settings.dart';
 
 /// This widget defines the entirety of the screen that the player sees when
@@ -130,9 +125,7 @@ class _JoinRoomScreenState extends State<JoinRoomScreen> {
                           final players = room.numberOfPlayers;
                           final isGameStarted = room.gameStarted;
 
-                          if (!isGameStarted &&
-                              players != 0 &&
-                              players <= 5) {
+                          if (!isGameStarted && players != 0 && players <= 5) {
                             return ListTile(
                               title: Row(
                                 mainAxisAlignment:

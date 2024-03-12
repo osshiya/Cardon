@@ -1,15 +1,10 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:myapp/player_progress/player_progress.dart';
-import 'package:myapp/settings/settings.dart';
 import 'package:provider/provider.dart';
 
-import '../audio/audio_controller.dart';
-import '../audio/sfx.dart';
-import '../game_internals/card_suit.dart';
-import '../game_internals/player.dart';
-import '../game_internals/playing_card.dart';
-import '../style/palette.dart';
+import 'package:myapp/game_internals/card_suit.dart';
+import 'package:myapp/game_internals/player.dart';
+import 'package:myapp/game_internals/playing_card.dart';
+import 'package:myapp/style/palette.dart';
 
 class PlayingAreaCardWidget extends StatelessWidget {
   // A standard playing card is 57.1mm x 88.9mm.
@@ -23,8 +18,7 @@ class PlayingAreaCardWidget extends StatelessWidget {
 
   final bool currentPlayer;
 
-  const PlayingAreaCardWidget(
-      this.card, this.player, this.currentPlayer,
+  const PlayingAreaCardWidget(this.card, this.player, this.currentPlayer,
       {super.key});
 
   @override
@@ -59,7 +53,7 @@ class PlayingAreaCardWidget extends StatelessWidget {
 
     /// Cards that aren't in a player's hand are not draggable.
     if (player == null) return cardWidget;
-      return cardWidget;
+    return cardWidget;
     // }
   }
 }

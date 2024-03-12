@@ -6,12 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-import '../player_progress/player_progress.dart';
-import '../style/button.dart';
-import '../style/palette.dart';
-import '../style/responsive_screen.dart';
-import 'custom_name_dialog.dart';
-import 'settings.dart';
+import 'package:myapp/player_progress/player_progress.dart';
+import 'package:myapp/style/button.dart';
+import 'package:myapp/style/palette.dart';
+import 'package:myapp/style/responsive_screen.dart';
+import 'package:myapp/settings/custom_name_dialog.dart';
+import 'package:myapp/settings/settings.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});

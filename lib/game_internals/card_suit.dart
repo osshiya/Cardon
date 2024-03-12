@@ -4,7 +4,7 @@ enum CardSuit {
   transportation(2),
   industry(3),
   agriculture(4);
-  
+
   final int internalRepresentation;
 
   const CardSuit(this.internalRepresentation);
@@ -34,7 +34,7 @@ enum CardSuit {
         return CardSuitColor.yellow;
       case CardSuit.agriculture:
         return CardSuitColor.red;
-    case CardSuit.all:
+      case CardSuit.all:
         return CardSuitColor.none;
     }
   }

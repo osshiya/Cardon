@@ -42,6 +42,6 @@ class Palette {
   Color get backgroundPlaySession => const Color(0xffffebb5);
   Color get background4 => const Color(0xffffffd1);
   Color get backgroundSettings => const Color(0xffbfc8e3);
-  
+
   Color get trueWhite => const Color(0xffffffff);
 }

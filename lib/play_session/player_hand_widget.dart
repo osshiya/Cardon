@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:myapp/game_internals/card_suit.dart';
-import 'package:myapp/game_internals/playing_area.dart';
-import 'package:myapp/game_internals/playing_card.dart';
 import 'package:provider/provider.dart';
 
-import '../game_internals/board_state.dart';
-import 'playing_card_widget.dart';
+import 'package:myapp/game_internals/board_state.dart';
+import 'package:myapp/game_internals/playing_area.dart';
+import 'package:myapp/play_session/playing_card_widget.dart';
 
 class PlayerHandWidget extends StatelessWidget {
   final PlayingArea area;
@@ -31,8 +29,8 @@ class PlayerHandWidget extends StatelessWidget {
               spacing: 10,
               runSpacing: 10,
               children: [
-                ...boardState.player.hand.map((card) =>
-                    PlayingCardWidget(card, boardState.player, currentPlayer, area)),
+                ...boardState.player.hand.map((card) => PlayingCardWidget(
+                    card, boardState.player, currentPlayer, area)),
               ],
             );
           },

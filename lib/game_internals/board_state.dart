@@ -4,8 +4,8 @@
 
 import 'package:flutter/foundation.dart';
 
-import 'player.dart';
-import 'playing_area.dart';
+import 'package:myapp/game_internals/player.dart';
+import 'package:myapp/game_internals/playing_area.dart';
 
 class BoardState {
   final VoidCallback onWin;

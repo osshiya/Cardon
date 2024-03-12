@@ -9,16 +9,10 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-import '../audio/audio_controller.dart';
-import '../audio/sfx.dart';
-// import '../multiplayer/old_firestore_controller.dart';
-import '../style/confetti.dart';
-import '../style/button.dart';
-import '../style/palette.dart';
-
+import 'package:myapp/style/button.dart';
+import 'package:myapp/style/palette.dart';
 import 'package:myapp/settings/settings.dart';
-import '../player_progress/player_progress.dart';
-import '../multiplayer/firestore_controller.dart';
+import 'package:myapp/player_progress/player_progress.dart';
 
 /// This widget defines the entirety of the screen that the player sees when
 /// they are playing a level.
@@ -46,7 +40,7 @@ class _RoomScreenState extends State<RoomScreen> {
     _initializeRoomStream();
   }
 
-    @override
+  @override
   void didUpdateWidget(RoomScreen oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.roomId != oldWidget.roomId) {
@@ -92,7 +86,10 @@ class _RoomScreenState extends State<RoomScreen> {
       final updatedPlayers =
           players.where((player) => player['uid'] != playerUID).toList();
 
-      await FirebaseFirestore.instance.collection('rooms').doc(widget.roomId).update({
+      await FirebaseFirestore.instance
+          .collection('rooms')
+          .doc(widget.roomId)
+          .update({
         'players': updatedPlayers,
       });
 
@@ -113,7 +110,11 @@ class _RoomScreenState extends State<RoomScreen> {
       await FirebaseFirestore.instance
           .collection('rooms')
           .doc(widget.roomId)
-          .update({'gameStarted': true, 'currentPlayers': currentPlayers, 'cards': []});
+          .update({
+        'gameStarted': true,
+        'currentPlayers': currentPlayers,
+        'cards': []
+      });
     } catch (e) {
       // Handle any errors that occur during the update process
       print('Error notifying game start: $e');

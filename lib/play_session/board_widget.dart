@@ -5,18 +5,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:myapp/game_internals/card_suit.dart';
+import 'package:provider/provider.dart';
+
+import 'package:myapp/game_internals/board_state.dart';
 import 'package:myapp/game_internals/player.dart';
-import 'package:myapp/game_internals/playing_card.dart';
 import 'package:myapp/game_internals/playing_timer.dart';
+import 'package:myapp/play_session/player_hand_widget.dart';
+import 'package:myapp/play_session/playing_area_widget.dart';
 import 'package:myapp/play_session/playing_timer_widget.dart';
 import 'package:myapp/player_progress/player_progress.dart';
 import 'package:myapp/settings/settings.dart';
-import 'package:provider/provider.dart';
-
-import '../game_internals/board_state.dart';
-import 'player_hand_widget.dart';
-import 'playing_area_widget.dart';
 
 /// This widget defines the game UI itself, without things like the settings
 /// button or the back button.
@@ -74,11 +72,11 @@ class _BoardWidgetState extends State<BoardWidget> {
       final gameEnded = snapshot.data()?['gameStarted'] == false;
       final winner = snapshot.data()?['winner'];
       if (gameEnded) {
-      GoRouter.of(context).go('/play/won', extra: {'winner': winner});
+        GoRouter.of(context).go('/play/won', extra: {'winner': winner});
       }
     });
   }
-  
+
   @override
   void dispose() {
     // Stop the timer when the widget is disposed

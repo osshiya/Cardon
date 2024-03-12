@@ -3,11 +3,10 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'dart:async';
-
 import 'package:flutter/foundation.dart';
 
-import 'persistence/local_storage_player_progress_persistence.dart';
-import 'persistence/player_progress_persistence.dart';
+import 'package:myapp/player_progress/persistence/local_storage_player_progress_persistence.dart';
+import 'package:myapp/player_progress/persistence/player_progress_persistence.dart';
 
 /// Encapsulates the player's progress.
 class PlayerProgress extends ChangeNotifier {
@@ -42,10 +41,10 @@ class PlayerProgress extends ChangeNotifier {
   /// value and save it to the injected persistence store.
   void setLastRoomID(String room) {
     // if (_lastRoomId == '') {
-      _lastRoomId = room;
-      notifyListeners();
+    _lastRoomId = room;
+    notifyListeners();
 
-      unawaited(_store.saveLastRoomID(room));
+    unawaited(_store.saveLastRoomID(room));
     // }
   }
 
