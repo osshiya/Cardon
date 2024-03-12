@@ -28,7 +28,7 @@ import '../multiplayer/firestore_controller.dart';
 class RoomScreen extends StatefulWidget {
   final String roomId;
 
-  const RoomScreen({super.key, required this.roomId});
+  const RoomScreen({Key? key, required this.roomId});
 
   @override
   State<RoomScreen> createState() => _RoomScreenState();
@@ -36,46 +36,84 @@ class RoomScreen extends StatefulWidget {
 
 class _RoomScreenState extends State<RoomScreen> {
   late Stream<Room> _roomStream;
-  late String roomId;
-  List<Map<String, dynamic>> players = [];
+  late String playerUID = '';
+  late String playerName = '';
+  late List<Map<String, dynamic>> players = [];
 
   @override
   void initState() {
     super.initState();
+    _initializeRoomStream();
+  }
 
-    roomId = widget.roomId;
+    @override
+  void didUpdateWidget(RoomScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.roomId != oldWidget.roomId) {
+      _initializeRoomStream(); // Re-initialize the room stream if the roomId changes
+    }
+  }
+
+  void _initializeRoomStream() {
+    print(widget.roomId);
+    final settings = Provider.of<SettingsController>(context, listen: false);
+    playerUID = settings.playerUID.value;
+    playerName = settings.playerName.value;
 
     final playerProgress = Provider.of<PlayerProgress>(context, listen: false);
-    playerProgress.setLastRoomID(roomId);
+    playerProgress.setLastRoomID(widget.roomId);
 
-    _roomStream = FirebaseFirestore.instance
-        .collection('rooms')
-        .doc(roomId)
-        .snapshots()
-        .map((snapshot) => Room.fromSnapshot(snapshot));
+    try {
+      _roomStream = FirebaseFirestore.instance
+          .collection('rooms')
+          .doc(widget.roomId)
+          .snapshots()
+          .map((snapshot) => Room.fromSnapshot(snapshot));
 
-    // Listen to changes in the stream and update players list accordingly
-    _roomStream.listen((room) {
-      setState(() {
-        players = room.players;
+      // Listen to changes in the stream and update players list accordingly
+      _roomStream.listen((r) {
+        setState(() {
+          players = r.players;
+        });
+
+        // Check if the game has started
+        if (r.gameStarted) {
+          GoRouter.of(context).go('/play');
+        }
+      });
+    } catch (e) {
+      print('Error initializing room stream: $e');
+      // Handle initialization errors
+    }
+  }
+
+  void removePlayerFromRoom(BuildContext context) async {
+    try {
+      final updatedPlayers =
+          players.where((player) => player['uid'] != playerUID).toList();
+
+      await FirebaseFirestore.instance.collection('rooms').doc(widget.roomId).update({
+        'players': updatedPlayers,
       });
 
-      // Check if the game has started
-      if (room.gameStarted) {
-        GoRouter.of(context).go('/play');
-      }
-    });
+      // Navigate back to the previous screen or any other screen
+      GoRouter.of(context).push('/join');
+    } catch (e) {
+      print('Error removing player from room: $e');
+      // Handle errors
+    }
   }
 
   void notifyGameStart() async {
     try {
-      List<String> currentPlayers = players.map((player) => player['uid'] as String).toList();
+      List<String> currentPlayers =
+          players.map((player) => player['uid'] as String).toList();
       currentPlayers.shuffle();
       // Update a field in Firestore to indicate that the game has started
       await FirebaseFirestore.instance
           .collection('rooms')
-          .doc(roomId)
-          .update({'gameStarted': true, 'currentPlayers': currentPlayers});
+          .doc(widget.roomId)
+          .update({'gameStarted': true, 'currentPlayers': currentPlayers, 'cards': []});
     } catch (e) {
       // Handle any errors that occur during the update process
       print('Error notifying game start: $e');
@@ -107,7 +145,7 @@ class _RoomScreenState extends State<RoomScreen> {
                   Align(
                     alignment: Alignment.centerLeft,
                     child: InkResponse(
-                      onTap: () => GoRouter.of(context).push('/'),
+                      onTap: () => removePlayerFromRoom(context),
                       child: Image.asset(
                         'assets/images/settings.png',
                         semanticLabel: 'Home',
@@ -126,7 +164,7 @@ class _RoomScreenState extends State<RoomScreen> {
                   ),
                 ],
               ),
-              Text(roomId),
+              Text(widget.roomId),
               // const Spacer(),
               // The actual UI of the game.
               Expanded(
@@ -164,6 +202,8 @@ class _RoomScreenState extends State<RoomScreen> {
                 padding: const EdgeInsets.all(8.0),
                 child: MyButton(
                   onPressed: players.isNotEmpty &&
+                          // players.length >= 2 &&
+                          // players.length <= 4 &&
                           players[0]['uid'].toString() ==
                               settings.playerUID.value.toString()
                       ? () {

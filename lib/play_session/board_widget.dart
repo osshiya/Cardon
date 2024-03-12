@@ -35,7 +35,6 @@ class _BoardWidgetState extends State<BoardWidget> {
   late String playerName = '';
   late List currentPlayers = [];
   late PlayingTimer playingTimer;
-  late PlayingCard lastCard = PlayingCard(CardSuit.all, 0);
 
   @override
   void initState() {
@@ -79,13 +78,6 @@ class _BoardWidgetState extends State<BoardWidget> {
       }
     });
   }
-
-  // Define a function to update lastCard
-  void updateLastCard(PlayingCard newLastCard) {
-    setState(() {
-      lastCard = newLastCard;
-    });
-  }
   
   @override
   void dispose() {
@@ -109,12 +101,12 @@ class _BoardWidgetState extends State<BoardWidget> {
             children: [
               Expanded(
                 child: PlayingAreaWidget(boardState.playingArea,
-                    boardState.player, roomId, currentPlayer, currentPlayers, lastCard, updateLastCard),
+                    boardState.player, roomId, currentPlayer, currentPlayers),
               )
             ],
           ),
         ),
-        PlayerHandWidget(currentPlayer, lastCard),
+        PlayerHandWidget(boardState.playingArea, currentPlayer),
       ],
     );
   }

@@ -23,10 +23,8 @@ class PlayingAreaCardWidget extends StatelessWidget {
 
   final bool currentPlayer;
 
-  final PlayingCard lastCard;
-
   const PlayingAreaCardWidget(
-      this.card, this.player, this.currentPlayer, this.lastCard,
+      this.card, this.player, this.currentPlayer,
       {super.key});
 
   @override
@@ -61,30 +59,6 @@ class PlayingAreaCardWidget extends StatelessWidget {
 
     /// Cards that aren't in a player's hand are not draggable.
     if (player == null) return cardWidget;
-    // if (currentPlayer && (lastCard.suit == card.suit || lastCard.suit == CardSuit.all)) {
-    //   return Draggable(
-    //     feedback: Transform.rotate(
-    //       angle: 0.1,
-    //       child: cardWidget,
-    //     ),
-    //     data: PlayingCardDragData(card, player!),
-    //     childWhenDragging: Opacity(
-    //       opacity: 0.5,
-    //       child: cardWidget,
-    //     ),
-    //     onDragStarted: () {
-    //       print(lastCard);
-    //       final audioController = context.read<AudioController>();
-    //       audioController.playSfx(SfxType.huhsh);
-    //     },
-    //     onDragEnd: (details) {
-    //       final audioController = context.read<AudioController>();
-    //       audioController.playSfx(SfxType.wssh);
-    //     },
-    //     child: cardWidget,
-    //   );
-    // } else {
-    //   // If the player is not the current player, return the card without draggable behavior
       return cardWidget;
     // }
   }

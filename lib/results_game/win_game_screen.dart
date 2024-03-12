@@ -2,8 +2,11 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+import 'dart:js';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:myapp/player_progress/player_progress.dart';
 import 'package:provider/provider.dart';
 
 import '../game_internals/score.dart';
@@ -11,17 +14,28 @@ import '../style/button.dart';
 import '../style/palette.dart';
 import '../style/responsive_screen.dart';
 
-class WinGameScreen extends StatelessWidget {
+class WinGameScreen extends StatefulWidget {
   final String winner;
 
   const WinGameScreen({
-    super.key,
+    Key? key,
     required this.winner,
-  });
+  }) : super(key: key);
+
+  @override
+  State<WinGameScreen> createState() => _WinGameScreenState();
+}
+
+class _WinGameScreenState extends State<WinGameScreen> {
+  late String roomId = '';
 
   @override
   Widget build(BuildContext context) {
     final palette = context.watch<Palette>();
+    final playerProgress = Provider.of<PlayerProgress>(context);
+
+    // Initialize roomId when playerProgress is available
+    roomId = playerProgress.lastRoomId;
 
     const gap = SizedBox(height: 10);
 
@@ -34,7 +48,7 @@ class WinGameScreen extends StatelessWidget {
             gap,
             Center(
               child: Text(
-                '$winner won!',
+                '${widget.winner} won!',
                 style: TextStyle(fontFamily: 'Permanent Marker', fontSize: 50),
               ),
             ),
@@ -51,7 +65,7 @@ class WinGameScreen extends StatelessWidget {
         ),
         rectangularMenuArea: MyButton(
           onPressed: () {
-            GoRouter.of(context).go('/');
+            GoRouter.of(context).go('/room/$roomId');
           },
           child: const Text('Continue'),
         ),

@@ -127,23 +127,34 @@ class _JoinRoomScreenState extends State<JoinRoomScreen> {
                         itemCount: rooms.length,
                         itemBuilder: (context, index) {
                           final room = rooms[index];
-                          return ListTile(
-                            title: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(room.roomName),
-                                Text('Players: ${room.numberOfPlayers}/4'),
-                              ],
-                            ), // subtitle:
-                            //     Text('Players: ${room.numberOfPlayers}/4'),
-                            onTap: () {
-                              // Navigate to the selected room
-                              // Store the selected room ID when tapped
-                              setState(() {
-                                _selectedRoomId = room.roomId;
-                              });
-                            },
-                          );
+                          final players = room.numberOfPlayers;
+                          final isGameStarted = room.gameStarted;
+
+                          if (!isGameStarted &&
+                              players != 0 &&
+                              players <= 5) {
+                            return ListTile(
+                              title: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(room.roomName),
+                                  Text('Players: ${room.numberOfPlayers}/4'),
+                                ],
+                              ), // subtitle:
+                              //     Text('Players: ${room.numberOfPlayers}/4'),
+                              onTap: () {
+                                // Navigate to the selected room
+                                // Store the selected room ID when tapped
+                                setState(() {
+                                  _selectedRoomId = room.roomId;
+                                });
+                              },
+                            );
+                          } else {
+                            // Return an empty container if conditions are not met
+                            return Container();
+                          }
                         },
                       );
                     } else {
@@ -191,11 +202,13 @@ class Room {
   final String roomId;
   final String roomName;
   final int numberOfPlayers;
+  final bool gameStarted;
 
   Room(
       {required this.roomId,
       required this.roomName,
-      required this.numberOfPlayers});
+      required this.numberOfPlayers,
+      required this.gameStarted});
 
   factory Room.fromSnapshot(DocumentSnapshot snapshot) {
     final data = snapshot.data() as Map<String, dynamic>;
@@ -203,6 +216,7 @@ class Room {
       roomId: snapshot.id,
       roomName: data['roomName'] ?? '',
       numberOfPlayers: (data['players'] as List<dynamic>).length,
+      gameStarted: data['gameStarted'] ?? false,
     );
   }
 }

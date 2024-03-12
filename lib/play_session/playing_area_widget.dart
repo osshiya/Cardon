@@ -26,11 +26,9 @@ class PlayingAreaWidget extends StatefulWidget {
   final String roomId;
   final bool currentPlayer;
   final List currentPlayers;
-  final PlayingCard lastCard;
-final Function(PlayingCard) updateLastCard;
 
   const PlayingAreaWidget(this.area, this.player, this.roomId,
-      this.currentPlayer, this.currentPlayers, this.lastCard, this.updateLastCard,
+      this.currentPlayer, this.currentPlayers,
       {super.key});
 
   @override
@@ -39,7 +37,6 @@ final Function(PlayingCard) updateLastCard;
 
 class _PlayingAreaWidgetState extends State<PlayingAreaWidget> {
   bool isHighlighted = false;
-  // PlayingCard lastCard = PlayingCard(CardSuit.all, 0);
 
   void updateCurrentPlayer(PlayerAction action) async {
     try {
@@ -97,7 +94,7 @@ class _PlayingAreaWidgetState extends State<PlayingAreaWidget> {
             child: InkWell(
               splashColor: palette.redPen,
               onTap: _onAreaTap,
-              child: StreamBuilder(
+child: StreamBuilder(
                 // Rebuild the card stack whenever the area changes
                 // (either by a player action, or remotely).
                 stream: widget.area.allChanges,
@@ -105,8 +102,7 @@ class _PlayingAreaWidgetState extends State<PlayingAreaWidget> {
                    _CardStack(
                     widget.area.cards,
                     widget.player,
-                    widget.currentPlayer,
-                    widget.lastCard, // Pass the latest card to the _CardStack widget
+                    widget.currentPlayer
                   )
               ),
             ),
@@ -134,7 +130,6 @@ class _PlayingAreaWidgetState extends State<PlayingAreaWidget> {
     setState(() => isHighlighted = false);
 
     updateCurrentPlayer(PlayerAction.next);
-    widget.updateLastCard(details.data.card);
   }
 
   void _onDragLeave(PlayingCardDragData? data) {
@@ -162,9 +157,8 @@ class _CardStack extends StatelessWidget {
   final List<PlayingCard> cards;
   final Player player;
   final bool currentPlayer;
-  final PlayingCard lastCard; // Make lastCard nullable
 
-  const _CardStack(this.cards, this.player, this.currentPlayer, this.lastCard);
+  const _CardStack(this.cards, this.player, this.currentPlayer);
 
   @override
   Widget build(BuildContext context) {
@@ -181,7 +175,7 @@ class _CardStack extends StatelessWidget {
                 top: i * _topOffset,
                 left: i * _leftOffset,
                 child: PlayingAreaCardWidget(
-                    cards[i], player, currentPlayer, lastCard),
+                    cards[i], player, currentPlayer),
               ),
           ],
         ),
