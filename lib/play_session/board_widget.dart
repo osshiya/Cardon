@@ -13,6 +13,7 @@ import 'package:myapp/game_internals/playing_timer.dart';
 import 'package:myapp/play_session/player_hand_widget.dart';
 import 'package:myapp/play_session/playing_area_widget.dart';
 import 'package:myapp/play_session/playing_timer_widget.dart';
+import 'package:myapp/play_session/playing_player_widget.dart';
 import 'package:myapp/player_progress/player_progress.dart';
 import 'package:myapp/settings/settings.dart';
 
@@ -44,6 +45,8 @@ class _BoardWidgetState extends State<BoardWidget> {
     playerUID = settings.playerUID.value;
     playerName = settings.playerName.value;
 
+    playingTimer = PlayingTimer();
+
     _playerStream = FirebaseFirestore.instance
         .collection('rooms')
         .doc(roomId)
@@ -52,17 +55,12 @@ class _BoardWidgetState extends State<BoardWidget> {
 
     // Listen to changes in the stream and update currentPlayer accordingly
     _playerStream.listen((player) {
-      // print(player.currentPlayer);
-      // print(playerUID);
-      // print(player.currentPlayer == playerUID);
+      print(player);
       setState(() {
         currentPlayers = player.currentPlayers;
-        currentPlayer = player.currentPlayers[0] == playerUID;
+        currentPlayer = player.currentPlayers[0]['uid'] == playerUID;
       });
     });
-
-    // Initialize the playing timer
-    playingTimer = PlayingTimer();
 
     FirebaseFirestore.instance
         .collection('rooms')
@@ -81,6 +79,7 @@ class _BoardWidgetState extends State<BoardWidget> {
   void dispose() {
     // Stop the timer when the widget is disposed
     playingTimer.stopTimer();
+    playingTimer.closeTimer();
     super.dispose();
   }
 
@@ -93,13 +92,14 @@ class _BoardWidgetState extends State<BoardWidget> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         PlayingTimerWidget(playingTimer),
+        PlayingPlayerWidget(currentPlayers),
         Padding(
           padding: const EdgeInsets.all(5),
           child: Row(
             children: [
               Expanded(
                 child: PlayingAreaWidget(boardState.playingArea,
-                    boardState.player, roomId, currentPlayer, currentPlayers),
+                    boardState.player, roomId, currentPlayer, currentPlayers, playingTimer),
               )
             ],
           ),

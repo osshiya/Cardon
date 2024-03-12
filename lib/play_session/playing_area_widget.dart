@@ -1,7 +1,9 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:myapp/game_internals/playing_timer.dart';
 import 'package:provider/provider.dart';
 
 import 'package:myapp/audio/audio_controller.dart';
@@ -21,9 +23,10 @@ class PlayingAreaWidget extends StatefulWidget {
   final String roomId;
   final bool currentPlayer;
   final List currentPlayers;
+  final PlayingTimer playingTimer;
 
   const PlayingAreaWidget(this.area, this.player, this.roomId,
-      this.currentPlayer, this.currentPlayers,
+      this.currentPlayer, this.currentPlayers, this.playingTimer,
       {super.key});
 
   @override
@@ -33,11 +36,65 @@ class PlayingAreaWidget extends StatefulWidget {
 class _PlayingAreaWidgetState extends State<PlayingAreaWidget> {
   bool isHighlighted = false;
 
-  void updateCurrentPlayer(PlayerAction action) async {
+  @override
+  void initState() {
+    super.initState();
+    widget.playingTimer.startTimer();
+  }
+
+  void _getCardAutomatically() {
+    if (widget.currentPlayer) {
+      widget.player.addCard();
+      _updateCardCount(PlayerAction.next);
+
+      final audioController = context.read<AudioController>();
+      audioController.playSfx(SfxType.huhsh);
+    }
+  }
+
+  void _updateCardCount(PlayerAction action) async {
+    Map firstPlayer = widget.currentPlayers[0]; // Get the first player
+
     try {
       switch (action) {
         case PlayerAction.next:
-          String lastPlayer = widget.currentPlayers[
+          firstPlayer['cardCount'] += 1;
+          break;
+        case PlayerAction.prev:
+          firstPlayer['cardCount'] -= 1;
+          break;
+      }
+
+      widget.currentPlayers[0] = firstPlayer;
+
+      try {
+        await FirebaseFirestore.instance
+            .collection('rooms')
+            .doc(widget.roomId)
+            .update({'currentPlayers': widget.currentPlayers});
+        print(widget.roomId);
+        print(widget.currentPlayers);
+        print('Current player updated successfully');
+      } catch (e) {
+        print(widget.roomId);
+        print(widget.currentPlayers);
+        print('Error updating current player: $e');
+      }
+
+      print('Current player updated successfully');
+    } catch (e) {
+      print('Error updating current player: $e');
+    }
+  }
+
+  void updateCurrentPlayer(PlayerAction action) async {
+    widget.playingTimer.stopTimer();
+    widget.playingTimer.startTimer();
+
+    try {
+      switch (action) {
+        case PlayerAction.next:
+          Map lastPlayer = widget.currentPlayers[
               widget.currentPlayers.length - 1]; // Get the last player
           widget.currentPlayers
               .insert(0, lastPlayer); // Move the last player to the beginning
@@ -45,7 +102,7 @@ class _PlayingAreaWidgetState extends State<PlayingAreaWidget> {
               .removeLast(); // Remove the last occurrence of the player
           break;
         case PlayerAction.prev:
-          String firstPlayer = widget.currentPlayers[0]; // Get the first player
+          Map firstPlayer = widget.currentPlayers[0]; // Get the first player
           widget.currentPlayers
               .add(firstPlayer); // Move the first player to the end
           widget.currentPlayers
@@ -106,12 +163,7 @@ class _PlayingAreaWidgetState extends State<PlayingAreaWidget> {
   }
 
   void _onAreaTap() {
-    if (widget.currentPlayer) {
-      // widget.area.removeFirstCard();
-      widget.player.addCard();
-      final audioController = context.read<AudioController>();
-      audioController.playSfx(SfxType.huhsh);
-    }
+    _getCardAutomatically();
   }
 
   void _onDragAccept(DragTargetDetails<PlayingCardDragData> details) {
@@ -119,6 +171,7 @@ class _PlayingAreaWidgetState extends State<PlayingAreaWidget> {
     details.data.holder.removeCard(details.data.card);
     setState(() => isHighlighted = false);
 
+    _updateCardCount(PlayerAction.prev);
     updateCurrentPlayer(PlayerAction.next);
   }
 

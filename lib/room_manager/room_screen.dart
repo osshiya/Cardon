@@ -103,9 +103,22 @@ class _RoomScreenState extends State<RoomScreen> {
 
   void notifyGameStart() async {
     try {
-      List<String> currentPlayers =
-          players.map((player) => player['uid'] as String).toList();
-      currentPlayers.shuffle();
+      List<Map<String, dynamic>> currentPlayers = [];
+      int count = 0;
+
+      List<Map<String, dynamic>> shuffledPlayers = List.from(players);
+      shuffledPlayers.shuffle();
+
+      shuffledPlayers.forEach((player) {
+        currentPlayers.add({
+          'uid': player['uid'].toString(),
+          'name': player['name'].toString(),
+          'cardCount': 7,
+          'order': count
+        });
+        count += 1;
+      });
+
       // Update a field in Firestore to indicate that the game has started
       await FirebaseFirestore.instance
           .collection('rooms')
