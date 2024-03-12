@@ -81,9 +81,8 @@ class PlayingCardWidget extends StatelessWidget {
                 showDialog(
                   context: context,
                   builder: (context) => AlertDialog(
-                    title: Text('Tapped Card'),
-                    content: Text(
-                        'You tapped the card: ${card.suit.asCharacter} ${card.value}.'),
+                    title: Text('${card.value} Carbon Emissions'),
+                    content: Text(card.getDesc(card.suit, card.value)),
                   ),
                 );
               },
@@ -114,8 +113,7 @@ class PlayingCardWidget extends StatelessWidget {
                   context: context,
                   builder: (context) => AlertDialog(
                     title: Text('Tapped Card'),
-                    content: Text(
-                        'You tapped the card: ${card.suit.asCharacter} ${card.value}.'),
+                    content: Text(card.getDesc(card.suit, card.value)),
                   ),
                 );
               },
