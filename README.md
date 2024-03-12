@@ -9,7 +9,7 @@ I've been watching a lot of livestreams of card games recently, and it looks lik
 "Cardon!" focuses on four key factors: Energy Production, Transportation, Industry, and Agriculture. Each card represents a different activity related to these factors, with numbers ranging from 0 to 9 indicating the level of carbon emissions associated with each activity. The game aims to educate users about the environmental impact of various activities while providing an engaging gaming experience. Additionally, the cards feature different effects and actions, simulating the consequences of these activities and highlighting their influence on the environment.
 
 ## How we built it
-We built "Cardon!" using Flutter and Firebase, leveraging the capabilities of these technologies to create a simple card game using the template for Flutter Casual Games Toolkit.
+We built "Cardon!" using Flutter and Firebase, leveraging the capabilities of these technologies to create a simple card game using the template from Flutter Casual Games Toolkit.
 
 ## Challenges we ran into
 One of the main challenges we encountered was learning the Flutter Casual Games Toolkit, which required navigating through various segmented components. Additionally, ensuring smooth data streaming for optimal performance posed a significant challenge. Time constraints prevented us from addressing all aspects of the project, leaving some features incomplete.
