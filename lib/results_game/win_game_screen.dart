@@ -25,6 +25,7 @@ class WinGameScreen extends StatefulWidget {
 
 class _WinGameScreenState extends State<WinGameScreen> {
   late String roomId = '';
+  late String roomName = '';
 
   @override
   Widget build(BuildContext context) {
@@ -33,11 +34,12 @@ class _WinGameScreenState extends State<WinGameScreen> {
 
     // Initialize roomId when playerProgress is available
     roomId = playerProgress.lastRoomId;
+    roomName = playerProgress.lastRoomName;
 
     const gap = SizedBox(height: 10);
 
     return Scaffold(
-      backgroundColor: palette.backgroundPlaySession,
+      backgroundColor: palette.backgroundMain,
       body: ResponsiveScreen(
         squarishMainArea: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -46,23 +48,18 @@ class _WinGameScreenState extends State<WinGameScreen> {
             Center(
               child: Text(
                 '${widget.winner} won!',
-                style: TextStyle(fontFamily: 'Permanent Marker', fontSize: 50),
+                style: TextStyle(
+                    fontFamily: 'Madimi One',
+                    fontSize: 50,
+                    color: palette.trueWhite),
               ),
             ),
             gap,
-            // Center(
-            //   child: Text(
-            //     // 'Score: ${score.score}\n'
-            //     // 'Time: ${score.formattedTime}',
-            //     style: const TextStyle(
-            //         fontFamily: 'Permanent Marker', fontSize: 20),
-            //   ),
-            // ),
           ],
         ),
         rectangularMenuArea: MyButton(
           onPressed: () {
-            GoRouter.of(context).go('/room/$roomId');
+            GoRouter.of(context).go('/room/$roomId&$roomName');
           },
           child: const Text('Continue'),
         ),

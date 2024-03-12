@@ -8,6 +8,8 @@
 /// local preferences to cloud saves.
 abstract class PlayerProgressPersistence {
   Future<String> getLastRoomID();
+  Future<String> getLastRoomName();
 
-  Future<void> saveLastRoomID(String room);
+  Future<void> saveLastRoomID(String roomId);
+  Future<void> saveLastRoomName(String roomName);
 }

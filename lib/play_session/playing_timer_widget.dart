@@ -1,6 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import 'package:myapp/style/palette.dart';
+import 'package:myapp/style/timer_paint.dart';
 import 'package:myapp/game_internals/playing_timer.dart';
 
 class PlayingTimerWidget extends StatefulWidget {
@@ -34,10 +38,27 @@ class _PlayingTimerWidgetState extends State<PlayingTimerWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final palette = Provider.of<Palette>(context);
+    final double progress = _remainingTime / 30;
+
     return Center(
-      child: Text(
-        '$_remainingTime',
-        style: TextStyle(fontSize: 24),
+      child: Container(
+        width: 100, // Adjust the width and height as needed
+        height: 100,
+        child: CustomPaint(
+          painter: TimerPainter(progress: progress, color: palette.timer),
+          child: Center(
+            child: Text(
+              '$_remainingTime',
+              style: TextStyle(
+                fontFamily: 'Madimi One',
+                color: palette.trueWhite,
+                fontSize: 25,
+                height: 1,
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }

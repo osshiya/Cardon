@@ -31,11 +31,13 @@ class Palette {
   Color get bluePen => const Color.fromARGB(255, 8, 38, 209);
   Color get yellowPen => const Color.fromARGB(255, 209, 202, 8);
   Color get blackPen => const Color(0xee352b42);
+  Color get greyPen => const Color.fromARGB(132, 71, 69, 74);
 
   Color get fontFullOpacity => const Color(0xfffcfdfd);
   Color get font => const Color(0xfffcfdfd);
 
   Color get accept => const Color(0xff15a44d);
+  Color get timer => const Color(0xffffc000);
 
   Color get backgroundMain => const Color(0xff4dd3c8);
   Color get backgroundLevelSelection => const Color(0xffa2dcc7);

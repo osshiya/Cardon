@@ -55,6 +55,7 @@ class _RoomScreenState extends State<RoomScreen> {
 
     final playerProgress = Provider.of<PlayerProgress>(context, listen: false);
     playerProgress.setLastRoomID(widget.roomId);
+    playerProgress.setLastRoomName(widget.roomName);
 
     try {
       _roomStream = FirebaseFirestore.instance
@@ -157,8 +158,8 @@ class _RoomScreenState extends State<RoomScreen> {
             Text(
               'Room: ${widget.roomName}',
               style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
+                fontFamily: 'Madimi One',
+                fontSize: 32,
                 color: palette.blackPen,
               ),
             ),

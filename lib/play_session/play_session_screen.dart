@@ -8,18 +8,17 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:logging/logging.dart' hide Level;
-import 'package:myapp/settings/settings.dart';
 import 'package:provider/provider.dart';
 
 import 'package:myapp/audio/audio_controller.dart';
 import 'package:myapp/audio/sfx.dart';
 import 'package:myapp/multiplayer/firestore_controller.dart';
 import 'package:myapp/style/confetti.dart';
-import 'package:myapp/style/button.dart';
 import 'package:myapp/style/palette.dart';
 import 'package:myapp/game_internals/board_state.dart';
 import 'package:myapp/play_session/board_widget.dart';
 import 'package:myapp/player_progress/player_progress.dart';
+import 'package:myapp/settings/settings.dart';
 
 /// This widget defines the entirety of the screen that the player sees when
 /// they are playing a level.
@@ -48,8 +47,6 @@ class _PlaySessionScreenState extends State<PlaySessionScreen> {
 
   bool _duringCelebration = false;
 
-  late DateTime _startOfPlay;
-
   late final BoardState _boardState;
 
   late final PlayerProgress _playerProgress;
@@ -68,7 +65,7 @@ class _PlaySessionScreenState extends State<PlaySessionScreen> {
         // Ignore all input during the celebration animation.
         ignoring: _duringCelebration,
         child: Scaffold(
-          backgroundColor: palette.backgroundPlaySession,
+          backgroundColor: palette.backgroundLevelSelection,
           // The stack is how you layer widgets on top of each other.
           // Here, it is used to overlay the winning confetti animation on top
           // of the game.
@@ -78,44 +75,40 @@ class _PlaySessionScreenState extends State<PlaySessionScreen> {
               // with a settings button at top, the actual play area
               // in the middle, and a back button at the bottom.
               Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
+                  SizedBox(height: 20),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Align(
-                        alignment: Alignment.centerLeft,
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: InkResponse(
-                          onTap: () => GoRouter.of(context).push('/'),
-                          child: Image.asset(
-                            'assets/images/settings.png',
-                            semanticLabel: 'Exit game',
-                          ),
+                          onTap: () => GoRouter.of(context).go('/'),
+                          child: Icon(Icons.logout), // Use exit_to_app icon
                         ),
                       ),
-                      Align(
-                        alignment: Alignment.centerRight,
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: InkResponse(
                           onTap: () => GoRouter.of(context).push('/settings'),
-                          child: Image.asset(
-                            'assets/images/settings.png',
-                            semanticLabel: 'Settings',
-                          ),
+                          child: Icon(Icons.settings), // Use settings icon
                         ),
                       ),
                     ],
                   ),
                   const Spacer(),
                   BoardWidget(),
-                  Text("Drag cards to the two areas above."),
-                  const Spacer(),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: MyButton(
-                      onPressed: () => GoRouter.of(context).go('/'),
-                      child: const Text('Back'),
+                  Text(
+                    "Drag a card of the same pattern or number to the circle above. \nElse, get a new card by tapping the circle. \nTap the card to view the card's information.",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: palette.blackPen,
+                      height: 1,
                     ),
                   ),
+                  const Spacer(),
                 ],
               ),
               SizedBox.expand(
@@ -145,7 +138,6 @@ class _PlaySessionScreenState extends State<PlaySessionScreen> {
   @override
   void initState() {
     super.initState();
-    _startOfPlay = DateTime.now();
     _boardState = BoardState(onWin: _playerWon);
     _playerProgress = context.read<PlayerProgress>();
     final firestore = context.read<FirebaseFirestore?>();

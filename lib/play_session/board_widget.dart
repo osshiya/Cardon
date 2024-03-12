@@ -35,6 +35,7 @@ class _BoardWidgetState extends State<BoardWidget> {
   late List currentPlayers = [];
   late PlayingTimer playingTimer;
   late String prevPlayer = '';
+  late int count = 0;
 
   @override
   void initState() {
@@ -66,6 +67,11 @@ class _BoardWidgetState extends State<BoardWidget> {
         playingTimer.stopTimer();
         playingTimer.startTimer();
         prevPlayer = player.currentPlayers[0]['uid'];
+        if (player.currentPlayers.length - 1 == count) {
+          count = 0;
+        } else {
+          count += 1;
+        }
       }
     });
 
@@ -99,7 +105,8 @@ class _BoardWidgetState extends State<BoardWidget> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         PlayingTimerWidget(playingTimer),
-        PlayingPlayerWidget(currentPlayers),
+        const SizedBox(height: 8),
+        PlayingPlayerWidget(currentPlayers, count),
         Padding(
           padding: const EdgeInsets.all(5),
           child: Row(

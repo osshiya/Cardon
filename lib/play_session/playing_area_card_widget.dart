@@ -40,13 +40,31 @@ class PlayingAreaCardWidget extends StatelessWidget {
         width: width,
         height: height,
         decoration: BoxDecoration(
-          color: palette.trueWhite,
-          border: Border.all(color: palette.font),
-          borderRadius: BorderRadius.circular(5),
+          color: textColor,
+          borderRadius: BorderRadius.circular(10),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.5),
+              spreadRadius: 0,
+              blurRadius: 1,
+              offset: Offset(0, 3), // changes position of shadow
+            ),
+          ],
+          border: Border.all(
+            color: Colors.grey.withOpacity(0.8),
+            width: 1,
+          ),
         ),
         child: Center(
-          child: Text('${card.suit.asCharacter}\n${card.value}',
-              textAlign: TextAlign.center),
+          child: Text(
+            '${card.suit.asCharacter}\n${card.value}',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: palette.trueWhite,
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
         ),
       ),
     );

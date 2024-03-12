@@ -19,8 +19,20 @@ class LocalStoragePlayerProgressPersistence extends PlayerProgressPersistence {
   }
 
   @override
-  Future<void> saveLastRoomID(String room) async {
+  Future<void> saveLastRoomID(String roomId) async {
     final prefs = await instanceFuture;
-    await prefs.setString('lastRoomID', room);
+    await prefs.setString('lastRoomID', roomId);
+  }
+
+  @override
+  Future<String> getLastRoomName() async {
+    final prefs = await instanceFuture;
+    return prefs.getString('lastRoomName') ?? '';
+  }
+
+  @override
+  Future<void> saveLastRoomName(String roomName) async {
+    final prefs = await instanceFuture;
+    await prefs.setString('lastRoomName', roomName);
   }
 }

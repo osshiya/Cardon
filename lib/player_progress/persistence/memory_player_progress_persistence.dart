@@ -7,17 +7,30 @@ import 'package:myapp/player_progress/persistence/player_progress_persistence.da
 /// An in-memory implementation of [PlayerProgressPersistence].
 /// Useful for testing.
 class MemoryOnlyPlayerProgressPersistence implements PlayerProgressPersistence {
-  String room = '';
+  String roomId = '';
+  String roomName = '';
 
   @override
   Future<String> getLastRoomID() async {
     await Future<void>.delayed(const Duration(milliseconds: 500));
-    return room;
+    return roomId;
   }
 
   @override
-  Future<void> saveLastRoomID(String room) async {
+  Future<void> saveLastRoomID(String roomId) async {
     await Future<void>.delayed(const Duration(milliseconds: 500));
-    this.room = room;
+    this.roomId = roomId;
+  }
+
+  @override
+  Future<String> getLastRoomName() async {
+    await Future<void>.delayed(const Duration(milliseconds: 500));
+    return roomName;
+  }
+
+  @override
+  Future<void> saveLastRoomName(String roomName) async {
+    await Future<void>.delayed(const Duration(milliseconds: 500));
+    this.roomName = roomName;
   }
 }
