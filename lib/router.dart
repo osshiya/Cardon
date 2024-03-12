@@ -44,10 +44,15 @@ final router = GoRouter(
           ),
         ),
         GoRoute(
-            path: 'room/:roomId',
+            path: 'room/:roomId&:roomName',
             builder: (context, state) {
               final roomId = state.pathParameters['roomId'];
-              return RoomScreen(key: Key('room'), roomId: roomId!);
+              final roomName = state.pathParameters['roomName'];
+              return RoomScreen(
+                key: Key('room'),
+                roomId: roomId!,
+                roomName: roomName!,
+              );
             }),
         GoRoute(
           path: 'play',

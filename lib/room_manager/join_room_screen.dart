@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-import 'package:myapp/style/button.dart';
 import 'package:myapp/style/palette.dart';
 import 'package:myapp/settings/settings.dart';
 
@@ -28,6 +27,7 @@ class JoinRoomScreen extends StatefulWidget {
 class _JoinRoomScreenState extends State<JoinRoomScreen> {
   late Stream<List<Room>> _roomsStream;
   String? _selectedRoomId;
+  String? _selectedRoomName;
 
   @override
   void initState() {
@@ -46,148 +46,130 @@ class _JoinRoomScreenState extends State<JoinRoomScreen> {
 
     return Scaffold(
       backgroundColor: palette.backgroundPlaySession,
-      // The stack is how you layer widgets on top of each other.
-      // Here, it is used to overlay the winning confetti animation on top
-      // of the game.
-      body: Stack(
-        children: [
-          // This is the main layout of the play session screen,
-          // with a settings button at top, the actual play area
-          // in the middle, and a back button at the bottom.
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Row(
+      body: SafeArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: InkResponse(
-                      onTap: () => GoRouter.of(context).push('/'),
-                      child: Image.asset(
-                        'assets/images/settings.png',
-                        semanticLabel: 'Home',
-                      ),
-                    ),
+                  IconButton(
+                    onPressed: () => GoRouter.of(context).go('/'),
+                    icon: Icon(Icons.arrow_back, color: palette.blackPen),
                   ),
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: InkResponse(
-                      onTap: () => setState(() {
-                        _roomsStream = FirebaseFirestore.instance
-                            .collection('rooms')
-                            .snapshots()
-                            .map((snapshot) => snapshot.docs
-                                .map((doc) => Room.fromSnapshot(doc))
-                                .toList());
-                      }),
-                      child: Image.asset(
-                        'assets/images/settings.png',
-                        semanticLabel: 'Refresh',
-                      ),
-                    ),
+                  IconButton(
+                    onPressed: _refreshRooms,
+                    icon: Icon(Icons.refresh, color: palette.blackPen),
                   ),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: InkResponse(
-                      onTap: () => GoRouter.of(context).push('/settings'),
-                      child: Image.asset(
-                        'assets/images/settings.png',
-                        semanticLabel: 'Settings',
-                      ),
-                    ),
+                  IconButton(
+                    onPressed: () => GoRouter.of(context).push('/settings'),
+                    icon: Icon(Icons.settings, color: palette.blackPen),
                   ),
                 ],
               ),
-              // const Spacer(),
-              // The actual UI of the game.
-              Expanded(
-                child: StreamBuilder<List<Room>>(
-                  stream: _roomsStream,
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(
-                        child:
-                            CircularProgressIndicator(), // Show loading indicator in the center
-                      );
-                    } else if (snapshot.hasError) {
-                      return Center(
-                        child: Text(
-                            'Error: ${snapshot.error}'), // Show error message in the center
-                      );
-                    } else if (snapshot.hasData) {
-                      final rooms = snapshot.data!;
-                      return ListView.builder(
-                        itemCount: rooms.length,
-                        itemBuilder: (context, index) {
-                          final room = rooms[index];
-                          final players = room.numberOfPlayers;
-                          final isGameStarted = room.gameStarted;
+            ),
+            Text(
+              'Join Room',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontFamily: 'Madimi One',
+                fontSize: 34,
+                color: palette.blackPen,
+              ),
+            ),
+            SizedBox(height: 20),
+            Expanded(
+              child: StreamBuilder<List<Room>>(
+                stream: _roomsStream,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(
+                      child: CircularProgressIndicator(color: palette.pen),
+                    );
+                  } else if (snapshot.hasError) {
+                    return Center(
+                      child: Text('Error: ${snapshot.error}',
+                          style: TextStyle(color: palette.blackPen)),
+                    );
+                  } else if (snapshot.hasData) {
+                    final rooms = snapshot.data!;
+                    return ListView.builder(
+                      itemCount: rooms.length,
+                      itemBuilder: (context, index) {
+                        final room = rooms[index];
+                        final players = room.numberOfPlayers;
+                        final isGameStarted = room.gameStarted;
 
-                          if (!isGameStarted && players != 0 && players <= 5) {
-                            return ListTile(
-                              title: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(room.roomName),
-                                  Text('Players: ${room.numberOfPlayers}/4'),
-                                ],
-                              ), // subtitle:
-                              //     Text('Players: ${room.numberOfPlayers}/4'),
+                        if (!isGameStarted && players != 0 && players <= 5) {
+                          return Card(
+                            elevation: 2,
+                            margin: EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 8),
+                            child: ListTile(
+                              title: Text(room.roomName,
+                                  style: TextStyle(color: palette.blackPen)),
+                              subtitle: Text('Players: $players/4',
+                                  style: TextStyle(
+                                      color:
+                                          palette.blackPen.withOpacity(0.7))),
                               onTap: () {
-                                // Navigate to the selected room
-                                // Store the selected room ID when tapped
                                 setState(() {
                                   _selectedRoomId = room.roomId;
+                                  _selectedRoomName = room.roomName;
                                 });
                               },
-                            );
-                          } else {
-                            // Return an empty container if conditions are not met
-                            return Container();
-                          }
-                        },
-                      );
-                    } else {
-                      return SizedBox(); // Return an empty SizedBox if none of the above conditions are met
-                    }
-                  },
-                ),
-              ),
-              // const Spacer(),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: MyButton(
-                  onPressed: _selectedRoomId != null
-                      ? () {
-                          final Map<String, dynamic> currentPlayer = {
-                            'uid': settings.playerUID.value,
-                            'name': settings.playerName.value,
-                          };
-                          FirebaseFirestore.instance
-                              .collection('rooms')
-                              .doc(_selectedRoomId)
-                              .update({
-                            'players': FieldValue.arrayUnion([currentPlayer])
-                          }).then((_) {
-                            print('Successfully joined room: $_selectedRoomId');
-                            // Navigate to the selected room
-                            GoRouter.of(context).go('/room/$_selectedRoomId');
-                          }).catchError((error) {
-                            print('Failed to join room: $error');
-                          });
+                            ),
+                          );
+                        } else {
+                          return SizedBox();
                         }
-                      : null,
-                  child: const Text('Join'),
-                ),
+                      },
+                    );
+                  } else {
+                    return SizedBox();
+                  }
+                },
               ),
-            ],
-          ),
-        ],
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: FilledButton(
+                onPressed: _selectedRoomId != null ? _joinRoom : null,
+                child: Text('Join', style: TextStyle(color: palette.trueWhite)),
+              ),
+            ),
+          ],
+        ),
       ),
     );
+  }
+
+  void _refreshRooms() {
+    setState(() {
+      _roomsStream = FirebaseFirestore.instance
+          .collection('rooms')
+          .snapshots()
+          .map((snapshot) =>
+              snapshot.docs.map((doc) => Room.fromSnapshot(doc)).toList());
+    });
+  }
+
+  void _joinRoom() {
+    final settings = context.read<SettingsController>();
+    final Map<String, dynamic> currentPlayer = {
+      'uid': settings.playerUID.value,
+      'name': settings.playerName.value
+    };
+    FirebaseFirestore.instance.collection('rooms').doc(_selectedRoomId).update({
+      'players': FieldValue.arrayUnion([currentPlayer])
+    }).then((_) {
+      print('Successfully joined room $_selectedRoomName: $_selectedRoomId');
+      GoRouter.of(context).go('/room/$_selectedRoomId&$_selectedRoomName');
+    }).catchError((error) {
+      print('Failed to join room: $error');
+    });
   }
 }
 

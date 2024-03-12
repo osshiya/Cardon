@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-import 'package:myapp/style/button.dart';
 import 'package:myapp/style/palette.dart';
 import 'package:myapp/settings/settings.dart';
 import 'package:myapp/player_progress/player_progress.dart';
@@ -21,8 +20,9 @@ import 'package:myapp/player_progress/player_progress.dart';
 /// such as whether the game is in a "celebration" state.
 class RoomScreen extends StatefulWidget {
   final String roomId;
+  final String roomName;
 
-  const RoomScreen({Key? key, required this.roomId});
+  const RoomScreen({Key? key, required this.roomId, required this.roomName});
 
   @override
   State<RoomScreen> createState() => _RoomScreenState();
@@ -44,12 +44,11 @@ class _RoomScreenState extends State<RoomScreen> {
   void didUpdateWidget(RoomScreen oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.roomId != oldWidget.roomId) {
-      _initializeRoomStream(); // Re-initialize the room stream if the roomId changes
+      _initializeRoomStream();
     }
   }
 
   void _initializeRoomStream() {
-    print(widget.roomId);
     final settings = Provider.of<SettingsController>(context, listen: false);
     playerUID = settings.playerUID.value;
     playerName = settings.playerName.value;
@@ -64,7 +63,6 @@ class _RoomScreenState extends State<RoomScreen> {
           .snapshots()
           .map((snapshot) => Room.fromSnapshot(snapshot));
 
-      // Listen to changes in the stream and update players list accordingly
       _roomStream.listen((r) {
         setState(() {
           players = r.players;
@@ -77,7 +75,6 @@ class _RoomScreenState extends State<RoomScreen> {
       });
     } catch (e) {
       print('Error initializing room stream: $e');
-      // Handle initialization errors
     }
   }
 
@@ -93,11 +90,9 @@ class _RoomScreenState extends State<RoomScreen> {
         'players': updatedPlayers,
       });
 
-      // Navigate back to the previous screen or any other screen
-      GoRouter.of(context).push('/join');
+      GoRouter.of(context).go('/join');
     } catch (e) {
       print('Error removing player from room: $e');
-      // Handle errors
     }
   }
 
@@ -129,7 +124,6 @@ class _RoomScreenState extends State<RoomScreen> {
         'cards': []
       });
     } catch (e) {
-      // Handle any errors that occur during the update process
       print('Error notifying game start: $e');
     }
   }
@@ -141,95 +135,91 @@ class _RoomScreenState extends State<RoomScreen> {
 
     return Scaffold(
       backgroundColor: palette.backgroundPlaySession,
-      // The stack is how you layer widgets on top of each other.
-      // Here, it is used to overlay the winning confetti animation on top
-      // of the game.
-      body: Stack(
-        children: [
-          // This is the main layout of the play session screen,
-          // with a settings button at top, the actual play area
-          // in the middle, and a back button at the bottom.
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: InkResponse(
-                      onTap: () => removePlayerFromRoom(context),
-                      child: Image.asset(
-                        'assets/images/settings.png',
-                        semanticLabel: 'Home',
-                      ),
-                    ),
-                  ),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: InkResponse(
-                      onTap: () => GoRouter.of(context).push('/settings'),
-                      child: Image.asset(
-                        'assets/images/settings.png',
-                        semanticLabel: 'Settings',
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              Text(widget.roomId),
-              // const Spacer(),
-              // The actual UI of the game.
-              Expanded(
-                child: StreamBuilder<Room>(
-                  stream: _roomStream,
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    } else if (snapshot.hasError) {
-                      return Center(
-                        child: Text('Error: ${snapshot.error}'),
-                      );
-                    } else {
-                      final room = snapshot.data!;
-                      players = room.players;
-                      return ListView.builder(
-                        itemCount: players.length,
-                        itemBuilder: (context, index) {
-                          final player = players[index];
-                          return ListTile(
-                            title: Text(player['name'] ?? 'Unknown'),
-                            subtitle: Text(
-                                player['uid'].toString() ?? 'No UID found'),
-                          );
-                        },
-                      );
-                    }
-                  },
-                ),
-              ),
-              // const Spacer(),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: MyButton(
-                  onPressed: players.isNotEmpty &&
-                          // players.length >= 2 &&
-                          // players.length <= 4 &&
-                          players[0]['uid'].toString() ==
-                              settings.playerUID.value.toString()
-                      ? () {
-                          notifyGameStart();
-                        }
-                      : null,
-                  child: const Text('Start'),
-                ),
-              ),
-            ],
+      appBar: AppBar(
+        backgroundColor: palette.backgroundPlaySession,
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: palette.blackPen),
+          onPressed: () => removePlayerFromRoom(context),
+        ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.settings, color: palette.blackPen),
+            onPressed: () => GoRouter.of(context).push('/settings'),
           ),
         ],
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(
+              'Room: ${widget.roomName}',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: palette.blackPen,
+              ),
+            ),
+            SizedBox(height: 16),
+            Expanded(
+              child: StreamBuilder<Room>(
+                stream: _roomStream,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(
+                      child: CircularProgressIndicator(
+                        color: palette.pen,
+                      ),
+                    );
+                  } else if (snapshot.hasError) {
+                    return Center(
+                      child: Text(
+                        'Error: ${snapshot.error}',
+                        style: TextStyle(color: palette.redPen),
+                      ),
+                    );
+                  } else {
+                    final room = snapshot.data!;
+                    return ListView.builder(
+                      itemCount: room.players.length,
+                      itemBuilder: (context, index) {
+                        final player = room.players[index];
+                        return ListTile(
+                          title: Text(
+                            player['name'] ?? 'Unknown',
+                            style: TextStyle(color: palette.blackPen),
+                          ),
+                          subtitle: Text(
+                            player['uid'].toString() ?? 'No UID found',
+                            style: TextStyle(color: palette.blackPen),
+                          ),
+                        );
+                      },
+                    );
+                  }
+                },
+              ),
+            ),
+            SizedBox(height: 16),
+            FilledButton(
+              onPressed: players.isNotEmpty &&
+                      // players.length >= 2 &&
+                      // players.length <= 4 &&
+                      players[0]['uid'].toString() ==
+                          settings.playerUID.value.toString()
+                  ? () {
+                      notifyGameStart();
+                    }
+                  : null,
+              child: Text(
+                'Start Game',
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

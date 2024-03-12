@@ -33,101 +33,108 @@ class _CreateRoomScreenState extends State<CreateRoomScreen> {
 
     return Scaffold(
       backgroundColor: palette.backgroundPlaySession,
-      // The stack is how you layer widgets on top of each other.
-      // Here, it is used to overlay the winning confetti animation on top
-      // of the game.
-      body: Stack(
-        children: [
-          // This is the main layout of the play session screen,
-          // with a settings button at top, the actual play area
-          // in the middle, and a back button at the bottom.
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Row(
+      body: SafeArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: InkResponse(
-                      onTap: () => GoRouter.of(context).push('/'),
-                      child: Image.asset(
-                        'assets/images/settings.png',
-                        semanticLabel: 'Home',
-                      ),
-                    ),
+                  IconButton(
+                    onPressed: () => GoRouter.of(context).go('/'),
+                    icon: Icon(Icons.arrow_back, color: palette.blackPen),
                   ),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: InkResponse(
-                      onTap: () => GoRouter.of(context).push('/settings'),
-                      child: Image.asset(
-                        'assets/images/settings.png',
-                        semanticLabel: 'Settings',
-                      ),
-                    ),
+                  IconButton(
+                    onPressed: () => GoRouter.of(context).push('/settings'),
+                    icon: Icon(Icons.settings, color: palette.blackPen),
                   ),
                 ],
               ),
-              const Spacer(),
-              // The actual UI of the game.
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: TextField(
-                    controller: _roomNameController,
-                    decoration: const InputDecoration(
-                      hintText: 'Enter room name',
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Create Room',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontFamily: 'Madimi One',
+                        fontSize: 34,
+                        color: palette.blackPen,
+                      ),
                     ),
-                  ),
+                    SizedBox(height: 20),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: palette.trueWhite,
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      child: TextField(
+                        controller: _roomNameController,
+                        style: TextStyle(color: palette.blackPen),
+                        decoration: InputDecoration(
+                          hintText: 'Enter room name',
+                          hintStyle: TextStyle(
+                              color: palette.blackPen.withOpacity(0.5)),
+                          border: InputBorder.none,
+                          contentPadding:
+                              EdgeInsets.symmetric(horizontal: 16.0),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ValueListenableBuilder<TextEditingValue>(
+                        valueListenable: _roomNameController,
+                        builder: (context, roomNameValue, child) {
+                          return MyButton(
+                            onPressed: roomNameValue.text.isNotEmpty
+                                ? () {
+                                    // Create a new room and add it to Firebase
+                                    final newRoom = Room(
+                                      roomId: '',
+                                      roomName: roomNameValue.text,
+                                      numberOfPlayers: 1,
+                                    );
+                                    final Map<String, dynamic> currentPlayer = {
+                                      'uid': settings.playerUID.value,
+                                      'name': settings.playerName.value,
+                                    };
+                                    FirebaseFirestore.instance
+                                        .collection('rooms')
+                                        .add({
+                                      'roomName': newRoom.roomName,
+                                      'players': FieldValue.arrayUnion(
+                                          [currentPlayer]),
+                                      'gameStarted': false
+                                    }).then((value) {
+                                      print(
+                                          'Room created successfully: ${value.id}');
+                                      _roomNameController.clear();
+                                      GoRouter.of(context).go(
+                                          '/room/${value.id}&${newRoom.roomName}');
+                                    }).catchError((error) {
+                                      print('Failed to create room: $error');
+                                    });
+                                  }
+                                : null,
+                            child: const Text('Join'),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              const Spacer(),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: ValueListenableBuilder<TextEditingValue>(
-                  valueListenable: _roomNameController,
-                  builder: (context, roomNameValue, child) {
-                    return MyButton(
-                      onPressed: roomNameValue.text.isNotEmpty
-                          ? () {
-                              // Create a new room and add it to Firebase
-                              final newRoom = Room(
-                                roomId: '',
-                                roomName: roomNameValue.text,
-                                numberOfPlayers:
-                                    1, // Assuming the creator joins the room initially
-                              );
-                              final Map<String, dynamic> currentPlayer = {
-                                'uid': settings.playerUID.value,
-                                'name': settings.playerName.value,
-                              };
-                              FirebaseFirestore.instance
-                                  .collection('rooms')
-                                  .add({
-                                'roomName': newRoom.roomName,
-                                'players':
-                                    FieldValue.arrayUnion([currentPlayer]),
-                                'gameStarted': false
-                              }).then((value) {
-                                // Successfully created room
-                                print('Room created successfully: ${value.id}');
-                                _roomNameController.clear();
-                                GoRouter.of(context).go('/room/${value.id}');
-                              }).catchError((error) {
-                                // Error occurred while creating room
-                                print('Failed to create room: $error');
-                              });
-                            }
-                          : null,
-                      child: const Text('Join'),
-                    );
-                  },
-                ),
-              ),
-            ],
-          ),
-        ],
+            ),
+          ],
+        ),
       ),
     );
   }

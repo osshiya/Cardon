@@ -26,17 +26,34 @@ class MainMenuScreen extends StatelessWidget {
       backgroundColor: palette.backgroundMain,
       body: ResponsiveScreen(
         squarishMainArea: Center(
-          child: Transform.rotate(
-            angle: -0.1,
-            child: const Text(
-              'Drag&Drop Cards!',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontFamily: 'Madimi One',
-                fontSize: 55,
-                height: 1,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Transform.rotate(
+                angle: -0.1,
+                child: const Text(
+                  'Cardon! A Climate Action Card Game',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontFamily: 'Madimi One',
+                    fontSize: 60,
+                    height: 1,
+                  ),
+                ),
               ),
-            ),
+              const SizedBox(
+                  height:
+                      40), // Add some spacing between the main text and the subtitle
+              const Text(
+                'Play, Learn, and Act to Combat Climate Change!',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontFamily: 'Madimi One',
+                  fontSize: 20,
+                  height: 1,
+                ),
+              ),
+            ],
           ),
         ),
         rectangularMenuArea: Column(
