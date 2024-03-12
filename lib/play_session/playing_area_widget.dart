@@ -84,22 +84,16 @@ class _PlayingAreaWidgetState extends State<PlayingAreaWidget> {
   }
 
   void updateCurrentPlayer(PlayerAction action) async {
+    List plays = widget.currentPlayers;
     try {
       switch (action) {
         case PlayerAction.next:
-          Map lastPlayer = widget.currentPlayers[
-              widget.currentPlayers.length - 1]; // Get the last player
-          widget.currentPlayers
-              .insert(0, lastPlayer); // Move the last player to the beginning
-          widget.currentPlayers
-              .removeLast(); // Remove the last occurrence of the player
+          Map lastPlayer = plays[plays.length - 1]; // Get the last player
+          plays.insert(0, lastPlayer); // Move the last player to the beginning
+          plays.removeLast(); // Remove the last occurrence of the player
           break;
         case PlayerAction.prev:
-          Map firstPlayer = widget.currentPlayers[0]; // Get the first player
-          widget.currentPlayers
-              .add(firstPlayer); // Move the first player to the end
-          widget.currentPlayers
-              .removeAt(0); // Remove the first occurrence of the player
+          plays = plays.reversed.toList();
           break;
       }
 
@@ -107,7 +101,7 @@ class _PlayingAreaWidgetState extends State<PlayingAreaWidget> {
         await FirebaseFirestore.instance
             .collection('rooms')
             .doc(widget.roomId)
-            .update({'currentPlayers': widget.currentPlayers});
+            .update({'currentPlayers': plays});
         print(widget.roomId);
         print(widget.currentPlayers);
         print('Current player updated successfully');
@@ -164,8 +158,32 @@ class _PlayingAreaWidgetState extends State<PlayingAreaWidget> {
     details.data.holder.removeCard(details.data.card);
     setState(() => isHighlighted = false);
 
+    List act = details.data.card
+        .getAction(details.data.card.suit, details.data.card.value);
+    switch (act[0]) {
+      case "skip":
+        for (var i = 0; i < details.data.card.value; i++) {
+          updateCurrentPlayer(PlayerAction.next);
+        }
+        updateCurrentPlayer(PlayerAction.next);
+        break;
+      case "add":
+        for (var i = 0; i < details.data.card.value; i++) {
+          _getCardAutomatically();
+          _updateCardCount(PlayerAction.next);
+        }
+        updateCurrentPlayer(PlayerAction.next);
+        break;
+      case "reverse":
+        updateCurrentPlayer(PlayerAction.prev);
+        break;
+      case "turn":
+        break;
+      case "none":
+        updateCurrentPlayer(PlayerAction.next);
+        break;
+    }
     _updateCardCount(PlayerAction.prev);
-    updateCurrentPlayer(PlayerAction.next);
   }
 
   void _onDragLeave(PlayingCardDragData? data) {

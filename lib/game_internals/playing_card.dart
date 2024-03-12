@@ -132,6 +132,208 @@ class PlayingCard {
     return '';
   }
 
+  String getActionDesc(CardSuit suit, int value) {
+    switch (suit) {
+      case CardSuit.energy:
+        if (value == 0) {
+          return 'Add 1 card to your hand for each player.';
+        } else if (value == 1) {
+          return 'Skip the next player\'s turn due to smooth operations.';
+        } else if (value == 2) {
+          return 'Add 2 cards to your hand for future investment.';
+        } else if (value == 3) {
+          return 'No effect for mutual benefit.';
+        } else if (value == 4) {
+          return 'Reverse the turn order to reflect mismanagement.';
+        } else if (value == 5) {
+          return 'Draw 2 additional cards due to reliance on fossil fuels.';
+        } else if (value == 6) {
+          return 'Skip the next player\'s turn to represent missed opportunities.';
+        } else if (value == 7) {
+          return 'Add 3 cards to your hand to compensate for setbacks.';
+        } else if (value == 8) {
+          return 'No effect to reflect loss of resources.';
+        } else if (value == 9) {
+          return 'Draw 2 additional cards due to environmental damage.';
+        }
+        break;
+      case CardSuit.transportation:
+        if (value == 0) {
+          return 'Take another turn for promoting sustainable transportation.';
+        } else if (value == 1) {
+          return 'Add 1 card to your hand to reflect efficiency.';
+        } else if (value == 2) {
+          return 'No effect to encourage eco-friendly infrastructure.';
+        } else if (value == 3) {
+          return 'No effect to support public transit.';
+        } else if (value == 4) {
+          return 'Reverse the turn order due to increased emissions.';
+        } else if (value == 5) {
+          return 'Draw 2 additional cards due to lack of foresight.';
+        } else if (value == 6) {
+          return 'Skip the next player\'s turn to represent misplaced priorities.';
+        } else if (value == 7) {
+          return 'No effect to reflect congestion.';
+        } else if (value == 8) {
+          return 'Draw 3 additional cards due to transportation failure.';
+        } else if (value == 9) {
+          return 'Add 2 cards to your hand due to environmental impact.';
+        }
+        break;
+      case CardSuit.industry:
+        if (value == 0) {
+          return 'No effect to reflect emissions reduction.';
+        } else if (value == 1) {
+          return 'Take another turn to promote sustainability.';
+        } else if (value == 2) {
+          return 'No effect for mutual benefit.';
+        } else if (value == 3) {
+          return 'Reverse the turn order due to environmental negligence.';
+        } else if (value == 4) {
+          return 'Skip the next player\'s turn to reflect reliance on polluting energy sources.';
+        } else if (value == 5) {
+          return 'Draw 2 additional cards due to lack of compliance.';
+        } else if (value == 6) {
+          return 'Add 2 cards to your hand to reflect environmental damage.';
+        } else if (value == 7) {
+          return 'Draw 2 additional cards due represent pollution.';
+        } else if (value == 8) {
+          return 'Draw 3 additional cards due to industrial mishaps.';
+        } else if (value == 9) {
+          return 'Skip the next player\'s turn due to environmental catastrophe.';
+        }
+        break;
+      case CardSuit.agriculture:
+        if (value == 0) {
+          return 'Take another turn for sustainable farming practices.';
+        } else if (value == 1) {
+          return 'No effect to represent soil conservation.';
+        } else if (value == 2) {
+          return 'No effect to support organic farming.';
+        } else if (value == 3) {
+          return 'Reverse the turn order to reflect environmental degradation.';
+        } else if (value == 4) {
+          return 'Draw 2 additional cards due to reliance on harmful chemicals.';
+        } else if (value == 5) {
+          return 'Skip the next player\'s turn to represent environmental neglect.';
+        } else if (value == 6) {
+          return 'Add 1 cards to your hand represent habitat destruction.';
+        } else if (value == 7) {
+          return 'Add 2 cards to your hand to reflect ecological damage.';
+        } else if (value == 8) {
+          return 'Draw 3 additional cards due to agricultural collapse.';
+        } else if (value == 9) {
+          return 'Skip the next player\'s turn due to deforestation.';
+        }
+        break;
+      case CardSuit.all:
+        break;
+    }
+    // If no specific description is found, return an empty string
+    return '';
+  }
+
+  List getAction(CardSuit suit, int value) {
+    switch (suit) {
+      case CardSuit.energy:
+        if (value == 0) {
+          return ['add', 1];
+        } else if (value == 1) {
+          return ['skip', 1];
+        } else if (value == 2) {
+          return ['add', 2];
+        } else if (value == 3) {
+          return ['none', 1];
+        } else if (value == 4) {
+          return ['reverse', 1];
+        } else if (value == 5) {
+          return ['add', 2];
+        } else if (value == 6) {
+          return ['skip', 1];
+        } else if (value == 7) {
+          return ['add', 3];
+        } else if (value == 8) {
+          return ['none', 2];
+        } else if (value == 9) {
+          return ['add', 2];
+        }
+        break;
+      case CardSuit.transportation:
+        if (value == 0) {
+          return ['turn', 1];
+        } else if (value == 1) {
+          return ['add', 1];
+        } else if (value == 2) {
+          return ['none', 2];
+        } else if (value == 3) {
+          return ['none', 1];
+        } else if (value == 4) {
+          return ['reverse', 1];
+        } else if (value == 5) {
+          return ['add', 2];
+        } else if (value == 6) {
+          return ['skip', 1];
+        } else if (value == 7) {
+          return ['none', 2];
+        } else if (value == 8) {
+          return ['add', 3];
+        } else if (value == 9) {
+          return ['add', 2];
+        }
+        break;
+      case CardSuit.industry:
+        if (value == 0) {
+          return ['none', 1];
+        } else if (value == 1) {
+          return ['turn', 1];
+        } else if (value == 2) {
+          return ['none', 1];
+        } else if (value == 3) {
+          return ['reverse', 1];
+        } else if (value == 4) {
+          return ['skip', 1];
+        } else if (value == 5) {
+          return ['add', 2];
+        } else if (value == 6) {
+          return ['add', 2];
+        } else if (value == 7) {
+          return ['none', 2];
+        } else if (value == 8) {
+          return ['add', 3];
+        } else if (value == 9) {
+          return ['skip', 1];
+        }
+        break;
+      case CardSuit.agriculture:
+        if (value == 0) {
+          return ['turn', 1];
+        } else if (value == 1) {
+          return ['none', 1];
+        } else if (value == 2) {
+          return ['none', 1];
+        } else if (value == 3) {
+          return ['reverse', 1];
+        } else if (value == 4) {
+          return ['add', 2];
+        } else if (value == 5) {
+          return ['skip', 1];
+        } else if (value == 6) {
+          return ['none', 2];
+        } else if (value == 7) {
+          return ['add', 2];
+        } else if (value == 8) {
+          return ['add', 3];
+        } else if (value == 9) {
+          return ['skip', 1];
+        }
+        break;
+      case CardSuit.all:
+        break;
+    }
+    // If no specific action is found, return an empty list
+    return [];
+  }
+
   @override
   int get hashCode => Object.hash(suit, value);
 

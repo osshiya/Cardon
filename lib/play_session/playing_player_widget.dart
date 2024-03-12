@@ -1,4 +1,4 @@
-\import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:myapp/style/palette.dart';
 import 'package:provider/provider.dart';
 
