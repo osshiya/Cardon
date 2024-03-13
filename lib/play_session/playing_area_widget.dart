@@ -170,7 +170,6 @@ class _PlayingAreaWidgetState extends State<PlayingAreaWidget> {
       case "add":
         for (var i = 0; i < act[1]; i++) {
           _getCardAutomatically();
-          _updateCardCount(PlayerAction.next);
         }
         updateCurrentPlayer(PlayerAction.next);
         break;

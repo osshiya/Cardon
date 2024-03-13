@@ -136,32 +136,32 @@ class PlayingCard {
     switch (suit) {
       case CardSuit.energy:
         if (value == 0) {
-          return 'Add 1 card to your hand for each player.';
+          return 'No effect.';
         } else if (value == 1) {
           return 'Skip the next player\'s turn due to smooth operations.';
         } else if (value == 2) {
-          return 'Add 2 cards to your hand for future investment.';
+          return 'Take another turn for future investment.';
         } else if (value == 3) {
           return 'No effect for mutual benefit.';
         } else if (value == 4) {
           return 'Reverse the turn order to reflect mismanagement.';
         } else if (value == 5) {
-          return 'Draw 2 additional cards due to reliance on fossil fuels.';
+          return 'Draw 1 additional cards due to reliance on fossil fuels.';
         } else if (value == 6) {
           return 'Skip the next player\'s turn to represent missed opportunities.';
         } else if (value == 7) {
-          return 'Add 3 cards to your hand to compensate for setbacks.';
+          return 'Add 2 cards to your hand to compensate for setbacks.';
         } else if (value == 8) {
           return 'No effect to reflect loss of resources.';
         } else if (value == 9) {
-          return 'Draw 2 additional cards due to environmental damage.';
+          return 'Draw 3 additional cards due to environmental damage.';
         }
         break;
       case CardSuit.transportation:
         if (value == 0) {
           return 'Take another turn for promoting sustainable transportation.';
         } else if (value == 1) {
-          return 'Add 1 card to your hand to reflect efficiency.';
+          return 'Take another turn to reflect efficiency.';
         } else if (value == 2) {
           return 'No effect to encourage eco-friendly infrastructure.';
         } else if (value == 3) {
@@ -169,15 +169,15 @@ class PlayingCard {
         } else if (value == 4) {
           return 'Reverse the turn order due to increased emissions.';
         } else if (value == 5) {
-          return 'Draw 2 additional cards due to lack of foresight.';
+          return 'Draw 1 additional cards due to lack of foresight.';
         } else if (value == 6) {
           return 'Skip the next player\'s turn to represent misplaced priorities.';
         } else if (value == 7) {
           return 'No effect to reflect congestion.';
         } else if (value == 8) {
-          return 'Draw 3 additional cards due to transportation failure.';
+          return 'Draw 2 additional cards due to transportation failure.';
         } else if (value == 9) {
-          return 'Add 2 cards to your hand due to environmental impact.';
+          return 'Add 3 cards to your hand due to environmental impact.';
         }
         break;
       case CardSuit.industry:
@@ -192,9 +192,9 @@ class PlayingCard {
         } else if (value == 4) {
           return 'Skip the next player\'s turn to reflect reliance on polluting energy sources.';
         } else if (value == 5) {
-          return 'Draw 2 additional cards due to lack of compliance.';
+          return 'Skip the next player\'s turn due to lack of compliance.';
         } else if (value == 6) {
-          return 'Add 2 cards to your hand to reflect environmental damage.';
+          return 'Add 1 cards to your hand to reflect environmental damage.';
         } else if (value == 7) {
           return 'Draw 2 additional cards due represent pollution.';
         } else if (value == 8) {
@@ -213,7 +213,7 @@ class PlayingCard {
         } else if (value == 3) {
           return 'Reverse the turn order to reflect environmental degradation.';
         } else if (value == 4) {
-          return 'Draw 2 additional cards due to reliance on harmful chemicals.';
+          return 'Skip the next player\'s turn due to reliance on harmful chemicals.';
         } else if (value == 5) {
           return 'Skip the next player\'s turn to represent environmental neglect.';
         } else if (value == 6) {
@@ -237,48 +237,48 @@ class PlayingCard {
     switch (suit) {
       case CardSuit.energy:
         if (value == 0) {
-          return ['add', 1];
+          return ['none', 1];
         } else if (value == 1) {
           return ['skip', 1];
         } else if (value == 2) {
-          return ['add', 2];
+          return ['turn', 1];
         } else if (value == 3) {
           return ['none', 1];
         } else if (value == 4) {
           return ['reverse', 1];
         } else if (value == 5) {
-          return ['add', 2];
+          return ['add', 1];
         } else if (value == 6) {
           return ['skip', 1];
         } else if (value == 7) {
-          return ['add', 3];
-        } else if (value == 8) {
-          return ['none', 2];
-        } else if (value == 9) {
           return ['add', 2];
+        } else if (value == 8) {
+          return ['none', 1];
+        } else if (value == 9) {
+          return ['add', 3];
         }
         break;
       case CardSuit.transportation:
         if (value == 0) {
           return ['turn', 1];
         } else if (value == 1) {
-          return ['add', 1];
+          return ['turn', 1];
         } else if (value == 2) {
-          return ['none', 2];
+          return ['none', 1];
         } else if (value == 3) {
           return ['none', 1];
         } else if (value == 4) {
           return ['reverse', 1];
         } else if (value == 5) {
-          return ['add', 2];
+          return ['add', 1];
         } else if (value == 6) {
           return ['skip', 1];
         } else if (value == 7) {
-          return ['none', 2];
+          return ['none', 1];
         } else if (value == 8) {
-          return ['add', 3];
-        } else if (value == 9) {
           return ['add', 2];
+        } else if (value == 9) {
+          return ['add', 3];
         }
         break;
       case CardSuit.industry:
@@ -293,11 +293,11 @@ class PlayingCard {
         } else if (value == 4) {
           return ['skip', 1];
         } else if (value == 5) {
-          return ['add', 2];
+          return ['skip', 1];
         } else if (value == 6) {
-          return ['add', 2];
+          return ['add', 1];
         } else if (value == 7) {
-          return ['none', 2];
+          return ['add', 2];
         } else if (value == 8) {
           return ['add', 3];
         } else if (value == 9) {
@@ -314,11 +314,11 @@ class PlayingCard {
         } else if (value == 3) {
           return ['reverse', 1];
         } else if (value == 4) {
-          return ['add', 2];
+          return ['skip', 1];
         } else if (value == 5) {
           return ['skip', 1];
         } else if (value == 6) {
-          return ['none', 2];
+          return ['add', 1];
         } else if (value == 7) {
           return ['add', 2];
         } else if (value == 8) {
