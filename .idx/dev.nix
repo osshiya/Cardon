@@ -3,6 +3,7 @@
   packages = [
     pkgs.flutter
     pkgs.jdk17
+    pkgs.firebase-tools
   ];
   idx.extensions = [];
   idx.previews = {
@@ -19,8 +20,9 @@
             manager = "flutter";
         }
         {
+            command = ["flutter" "run" "--machine" "-d" "ios"];
             id = "ios";
-            manager = "ios";
+            manager = "flutter";
         }
     ];
   };
